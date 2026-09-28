@@ -2,8 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LYWSD02MMC BLE Monitor</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LYWSD02MMC 溫濕度監測器</title>
 
 <style>
 * {
@@ -13,44 +13,41 @@
 body {
   margin: 0;
   padding: 20px;
-  font-family: Arial, "Noto Sans TC", sans-serif;
-  background: #f4f6f8;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Noto Sans TC",
+    Arial,
+    sans-serif;
+  background: #f3f5f7;
   color: #222;
 }
 
+.container {
+  max-width: 1100px;
+  margin: auto;
+}
+
 h1 {
+  margin: 0 0 8px;
+}
+
+h2 {
   margin-top: 0;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 20px;
 }
 
 .card {
   background: #fff;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 18px;
   margin-bottom: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.08);
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 12px;
-}
-
-.metric {
-  background: #f7f8fa;
-  border-radius: 10px;
-  padding: 14px;
-}
-
-.metric .label {
-  font-size: 13px;
-  color: #666;
-}
-
-.metric .value {
-  font-size: 25px;
-  font-weight: bold;
-  margin-top: 5px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
 }
 
 button {
@@ -59,129 +56,137 @@ button {
   padding: 10px 16px;
   margin: 4px;
   cursor: pointer;
-  background: #1976d2;
-  color: white;
+  background: #333;
+  color: #fff;
   font-size: 14px;
 }
 
 button:disabled {
-  background: #aaa;
+  opacity: .45;
   cursor: not-allowed;
+}
+
+button.secondary {
+  background: #777;
+}
+
+button.success {
+  background: #287a3e;
+}
+
+button.warning {
+  background: #a66a00;
 }
 
 input {
   padding: 9px;
   border: 1px solid #ccc;
   border-radius: 7px;
-  width: 100px;
+  width: 90px;
 }
 
 .status {
-  padding: 10px;
+  padding: 10px 12px;
   border-radius: 8px;
   background: #eee;
   margin-top: 10px;
+  white-space: pre-wrap;
 }
 
 .status.ok {
-  background: #dff5df;
-  color: #176117;
+  background: #e4f4e8;
+  color: #176b2d;
 }
 
 .status.error {
-  background: #ffe0e0;
-  color: #a00000;
+  background: #fce5e5;
+  color: #9b2226;
 }
 
-.status.info {
-  background: #e3f0ff;
-  color: #155a9c;
+.status.warn {
+  background: #fff2d7;
+  color: #805400;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.metric {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 14px;
+  background: #fafafa;
+}
+
+.metric .label {
+  color: #666;
+  font-size: 13px;
+}
+
+.metric .value {
+  font-size: 26px;
+  font-weight: 700;
+  margin-top: 5px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th,
+td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+th {
+  background: #f2f2f2;
+}
+
+.table-wrap {
+  overflow-x: auto;
 }
 
 pre {
-  white-space: pre-wrap;
-  word-break: break-word;
   background: #111;
   color: #ddd;
   padding: 12px;
   border-radius: 8px;
-  max-height: 350px;
-  overflow: auto;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 12px;
 }
 
-.timeBox {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.historyControls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-
-.historyStatus {
-  margin-top: 10px;
-}
-
-.historyProgress {
+.progress {
   width: 100%;
-  height: 12px;
+  height: 10px;
   background: #ddd;
   border-radius: 10px;
   overflow: hidden;
   margin-top: 8px;
 }
 
-.historyProgressBar {
+.progress-bar {
   width: 0%;
   height: 100%;
-  background: #1976d2;
+  background: #333;
   transition: width .2s;
 }
 
-.tableWrap {
-  overflow-x: auto;
-  max-height: 500px;
-  overflow-y: auto;
-  margin-top: 12px;
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-  min-width: 700px;
-}
-
-th,
-td {
-  border-bottom: 1px solid #ddd;
-  padding: 8px;
-  text-align: center;
-}
-
-th {
-  position: sticky;
-  top: 0;
-  background: #f1f3f5;
-  z-index: 1;
-}
-
-.aiProgress {
-  width: 100%;
-  height: 14px;
-  background: #ddd;
+.ai-output {
+  white-space: pre-wrap;
+  line-height: 1.7;
+  background: #fafafa;
+  border: 1px solid #ddd;
+  padding: 15px;
   border-radius: 10px;
-  overflow: hidden;
-  margin: 8px 0;
-}
-
-.aiProgressBar {
-  width: 0%;
-  height: 100%;
-  background: #4caf50;
-  transition: width .2s;
 }
 
 .small {
@@ -189,236 +194,263 @@ th {
   font-size: 13px;
 }
 
-.badge {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: #eee;
-  margin: 2px;
+.highlight {
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+
+  .card {
+    padding: 14px;
+  }
+
+  button {
+    width: 100%;
+    margin: 4px 0;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<h1>LYWSD02MMC BLE Monitor</h1>
+<div class="container">
 
-<div class="card">
-  <h2>1. 藍牙連線</h2>
-  <button id="connectBtn">連線</button>
-  <button id="disconnectBtn" disabled>斷線</button>
-  <div id="connectionStatus" class="status">尚未連線</div>
-</div>
-
-<div class="card">
-  <h2>2. 即時資料</h2>
-
-  <div class="grid">
-    <div class="metric">
-      <div class="label">溫度</div>
-      <div class="value" id="liveTemp">-- °C</div>
-    </div>
-
-    <div class="metric">
-      <div class="label">濕度</div>
-      <div class="value" id="liveHumidity">-- %</div>
-    </div>
-
-    <div class="metric">
-      <div class="label">電壓</div>
-      <div class="value" id="liveVoltage">-- mV</div>
-    </div>
-
-    <div class="metric">
-      <div class="label">電池</div>
-      <div class="value" id="liveBattery">-- %</div>
-    </div>
+  <h1>LYWSD02MMC 溫濕度監測器</h1>
+  <div class="subtitle">
+    Xiaomi / Mijia LYWSD02MMC｜Web Bluetooth｜WebLLM 本機 AI 分析
   </div>
-</div>
 
-<div class="card">
-  <h2>3. 時間同步</h2>
+  <!-- 連線 -->
+  <div class="card">
+    <h2>1. 藍牙連線</h2>
 
-  <div class="timeBox" id="deviceTime">裝置時間：--</div>
-  <div class="small" id="timeInfo">尚未讀取</div>
+    <button id="connectBtn">連接裝置</button>
+    <button id="disconnectBtn" class="secondary" disabled>中斷連線</button>
 
-  <button id="readTimeBtn" disabled>讀取裝置時間</button>
-  <button id="syncTimeBtn" disabled>同步目前時間</button>
-</div>
-
-<div class="card">
-  <h2>4. 歷史資料狀態</h2>
-
-  <div class="grid">
-    <div class="metric">
-      <div class="label">歷史總索引</div>
-      <div class="value" id="historyTotal">--</div>
-    </div>
-
-    <div class="metric">
-      <div class="label">目前保存筆數</div>
-      <div class="value" id="historyStored">--</div>
-    </div>
-
-    <div class="metric">
-      <div class="label">最舊索引</div>
-      <div class="value" id="historyOldest">--</div>
-    </div>
-
-    <div class="metric">
-      <div class="label">最新索引</div>
-      <div class="value" id="historyNewest">--</div>
+    <div id="connectionStatus" class="status">
+      尚未連線
     </div>
   </div>
 
-  <button id="readHistoryStatusBtn" disabled>讀取歷史狀態</button>
-</div>
+  <!-- 即時資料 -->
+  <div class="card">
+    <h2>2. 即時感測資料</h2>
 
-<div class="card">
-  <h2>5. 歷史資料</h2>
+    <div class="grid">
 
-  <div class="historyControls">
-    <label>
-      抓取筆數：
-      <input
-        id="historyCount"
-        type="number"
-        value="24"
-        min="1"
-        max="24"
-      >
-    </label>
+      <div class="metric">
+        <div class="label">溫度</div>
+        <div id="liveTemp" class="value">-- °C</div>
+      </div>
 
-    <button id="readHistoryBtn" disabled>讀取歷史資料</button>
-    <button id="exportCsvBtn" disabled>匯出 CSV</button>
-    <button id="clearHistoryBtn">清除資料</button>
+      <div class="metric">
+        <div class="label">濕度</div>
+        <div id="liveHumidity" class="value">-- %</div>
+      </div>
+
+      <div class="metric">
+        <div class="label">電壓</div>
+        <div id="liveVoltage" class="value">-- mV</div>
+      </div>
+
+      <div class="metric">
+        <div class="label">電池</div>
+        <div id="liveBattery" class="value">-- %</div>
+      </div>
+
+    </div>
+
+    <div id="liveStatus" class="status">
+      尚無即時資料
+    </div>
   </div>
 
-  <div class="historyStatus" id="historyStatus">
-    尚未讀取歷史資料
+  <!-- 時間 -->
+  <div class="card">
+    <h2>3. 裝置時間</h2>
+
+    <button id="readTimeBtn" disabled>讀取裝置時間</button>
+    <button id="syncTimeBtn" class="success" disabled>同步目前時間</button>
+
+    <div id="deviceTime" class="status">
+      尚未讀取
+    </div>
   </div>
 
-  <div class="historyProgress">
-    <div id="historyProgressBar" class="historyProgressBar"></div>
+  <!-- 歷史狀態 -->
+  <div class="card">
+    <h2>4. 歷史資料</h2>
+
+    <div class="small">
+      目前最多讀取 24 筆，避免 AI Prompt 超過模型 Context Window。
+    </div>
+
+    <div style="margin-top:10px;">
+      <label>
+        讀取筆數：
+        <input id="historyCount" type="number" value="24" min="1" max="24">
+      </label>
+    </div>
+
+    <button id="historyStatusBtn" disabled>讀取歷史狀態</button>
+    <button id="historyBtn" class="success" disabled>讀取歷史資料</button>
+    <button id="csvBtn" class="secondary" disabled>匯出 CSV</button>
+
+    <div id="historyStatus" class="status">
+      尚未讀取歷史狀態
+    </div>
+
+    <div id="historyProgressText" class="small"></div>
+
+    <div class="progress">
+      <div id="historyProgressBar" class="progress-bar"></div>
+    </div>
   </div>
 
-  <div class="tableWrap">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Index</th>
-          <th>時間</th>
-          <th>最低溫</th>
-          <th>最低濕度</th>
-          <th>最高溫</th>
-          <th>最高濕度</th>
-        </tr>
-      </thead>
-      <tbody id="historyTableBody"></tbody>
-    </table>
-  </div>
-</div>
+  <!-- 歷史表格 -->
+  <div class="card">
+    <h2>5. 歷史資料</h2>
 
-<div class="card">
-  <h2>6. 裝置</h2>
-  <div id="deviceInfo">尚未連線</div>
-</div>
+    <div id="historySummary" class="status">
+      尚無歷史資料
+    </div>
 
-<div class="card">
-  <h2>7. CCC1 即時資料</h2>
-  <pre id="ccc1Output">尚未收到資料</pre>
-</div>
-
-<div class="card">
-  <h2>8. CCC4 電池</h2>
-  <pre id="ccc4Output">尚未讀取</pre>
-</div>
-
-<div class="card">
-  <h2>9. 時間 Characteristic</h2>
-  <pre id="timeOutput">尚未讀取</pre>
-</div>
-
-<div class="card">
-  <h2>10. GATT</h2>
-  <pre id="gattOutput">尚未掃描</pre>
-</div>
-
-<div class="card">
-  <h2>11. Log</h2>
-  <pre id="logOutput"></pre>
-</div>
-
-<div class="card">
-  <h2>12. WebLLM AI 分析</h2>
-
-  <p class="small">
-    使用 Qwen3-0.6B-q4f16_1-MLC。
-    AI 不直接負責數值計算，統計由 JavaScript 完成。
-  </p>
-
-  <button id="loadModelBtn">載入 AI 模型</button>
-  <button id="analyzeBtn" disabled>分析目前 24 筆歷史資料</button>
-
-  <div id="aiStatus" class="status">
-    尚未載入模型
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>索引</th>
+            <th>時間</th>
+            <th>最高溫</th>
+            <th>最高濕度</th>
+            <th>最低溫</th>
+            <th>最低濕度</th>
+          </tr>
+        </thead>
+        <tbody id="historyTableBody"></tbody>
+      </table>
+    </div>
   </div>
 
-  <div class="aiProgress">
-    <div id="aiProgressBar" class="aiProgressBar"></div>
+  <!-- 統計 -->
+  <div class="card">
+    <h2>6. 數值統計</h2>
+
+    <div id="statsContainer" class="grid">
+      <div class="metric">
+        <div class="label">最高溫</div>
+        <div id="statMaxTemp" class="value">--</div>
+      </div>
+
+      <div class="metric">
+        <div class="label">最低溫</div>
+        <div id="statMinTemp" class="value">--</div>
+      </div>
+
+      <div class="metric">
+        <div class="label">最高濕度</div>
+        <div id="statMaxHumidity" class="value">--</div>
+      </div>
+
+      <div class="metric">
+        <div class="label">最低濕度</div>
+        <div id="statMinHumidity" class="value">--</div>
+      </div>
+
+      <div class="metric">
+        <div class="label">平均溫度</div>
+        <div id="statAvgTemp" class="value">--</div>
+      </div>
+
+      <div class="metric">
+        <div class="label">平均濕度</div>
+        <div id="statAvgHumidity" class="value">--</div>
+      </div>
+    </div>
+
+    <div id="timePeriodStats" style="margin-top:15px;"></div>
   </div>
 
-  <div id="aiProgressText" class="small">
-    0%
+  <!-- AI -->
+  <div class="card">
+    <h2>7. AI 趨勢分析</h2>
+
+    <div class="small">
+      使用 WebLLM + Qwen3-0.6B，在瀏覽器本機執行分析。
+    </div>
+
+    <button id="loadModelBtn" disabled>載入 AI 模型</button>
+    <button id="analyzeBtn" class="success" disabled>AI 分析</button>
+
+    <div id="aiStatus" class="status">
+      尚未載入 AI 模型
+    </div>
+
+    <div class="progress">
+      <div id="aiProgressBar" class="progress-bar"></div>
+    </div>
+
+    <div id="aiProgressText" class="small"></div>
+
+    <div id="aiOutput" class="ai-output" style="margin-top:15px;">
+      AI 分析結果會顯示在這裡。
+    </div>
   </div>
 
-  <pre id="aiOutput">尚未分析</pre>
+  <!-- GATT -->
+  <div class="card">
+    <h2>8. GATT / 除錯資訊</h2>
+    <pre id="debugLog"></pre>
+  </div>
+
 </div>
+
 
 <script type="module">
 
-import { CreateMLCEngine } from "https://esm.run/@mlc-ai/web-llm";
+import { CreateMLCEngine }
+  from "https://esm.run/@mlc-ai/web-llm";
+
 
 /* =========================================================
    UUID
 ========================================================= */
 
 const SERVICE_UUID =
-  "ebe0ccb0-7a0a-4b0c-8a1a-6ff2997da3a6";
-
-const DATA_UUID =
-  "ebe0ccc1-7a0a-4b0c-8a1a-6ff2997da3a6";
-
-const BATTERY_UUID =
-  "ebe0ccc4-7a0a-4b0c-8a1a-6ff2997da3a6";
+  "EBE0CCB0-7A0A-4B0C-8A1A-6FF2997DA3A6";
 
 const TIME_UUID =
-  "ebe0ccb7-7a0a-4b0c-8a1a-6ff2997da3a6";
+  "EBE0CCB7-7A0A-4B0C-8A1A-6FF2997DA3A6";
 
-const CCA4_UUID =
-  "ebe0cca4-7a0a-4b0c-8a1a-6ff2997da3a6";
-
-const CCD7_UUID =
-  "ebe0ccd7-7a0a-4b0c-8a1a-6ff2997da3a6";
-
-const HISTORY_COUNT_UUID =
-  "ebe0ccb9-7a0a-4b0c-8a1a-6ff2997da3a6";
+const HISTORY_STATUS_UUID =
+  "EBE0CCB9-7A0A-4B0C-8A1A-6FF2997DA3A6";
 
 const HISTORY_INDEX_UUID =
-  "ebe0ccba-7a0a-4b0c-8a1a-6ff2997da3a6";
+  "EBE0CCBA-7A0A-4B0C-8A1A-6FF2997DA3A6";
 
-const HISTORY_LAST_UUID =
-  "ebe0ccbb-7a0a-4b0c-8a1a-6ff2997da3a6";
+const HISTORY_DATA_UUID =
+  "EBE0CCBB-7A0A-4B0C-8A1A-6FF2997DA3A6";
 
 const HISTORY_NOTIFY_UUID =
-  "ebe0ccbc-7a0a-4b0c-8a1a-6ff2997da3a6";
+  "EBE0CCBC-7A0A-4B0C-8A1A-6FF2997DA3A6";
+
+const DATA_UUID =
+  "EBE0CCC1-7A0A-4B0C-8A1A-6FF2997DA3A6";
+
+const BATTERY_UUID =
+  "EBE0CCC4-7A0A-4B0C-8A1A-6FF2997DA3A6";
+
 
 /* =========================================================
    WebLLM
 ========================================================= */
 
-const MODEL_ID = "Qwen3-0.6B-q4f16_1-MLC";
+const MODEL_ID =
+  "Qwen3-0.6B-q4f16_1-MLC";
 
 const SYSTEM_PROMPT = `
 你是「LYWSD02MMC 環境感測趨勢分析助手」。
@@ -426,25 +458,35 @@ const SYSTEM_PROMPT = `
 你只負責根據瀏覽器已計算的感測資料進行客觀的趨勢解讀。
 
 規則：
-1. 不得捏造資料。
-2. 不得修改或重新計算使用者提供的統計數值。
-3. 不得把單次波動直接稱為故障。
-4. 不得診斷設備故障或健康狀態。
-5. 使用繁體中文。
-6. 指出趨勢時引用實際數值。
-7. 若資料不足以支持結論，明確說明。
-8. 將異常描述為「異常候選」。
-9. 輸出簡潔、條列、容易閱讀。
+1. 必須使用繁體中文回答。
+2. 不得使用簡體中文。
+3. 不得捏造資料。
+4. 不得修改或重新計算使用者提供的統計數值。
+5. 若需要計算，優先使用瀏覽器已提供的統計結果。
+6. 不得把單次波動直接稱為故障。
+7. 不得診斷設備故障或健康狀態。
+8. 指出趨勢時引用實際數值。
+9. 可以比較不同時間區段的溫度與濕度。
+10. 若資料不足以支持結論，明確說明。
+11. 將可能異常的情況描述為「異常候選」。
+12. 不要自行創造不存在的日期、時間或數值。
+13. 請優先分析「哪個時間段溫度較高」以及「哪個時間段濕度較高」。
+14. 輸出簡潔、條列、容易閱讀。
+15. 最後提醒目前資料筆數與資料涵蓋時間範圍。
 `;
 
 const state = {
   engine: null,
   loading: false,
-  analyzing: false
+  analyzing: false,
+  currentSuggestion: "",
+  currentTarget: null,
+  currentMode: null
 };
 
+
 /* =========================================================
-   BLE State
+   Bluetooth state
 ========================================================= */
 
 let device = null;
@@ -455,185 +497,207 @@ let dataCharacteristic = null;
 let batteryCharacteristic = null;
 let timeCharacteristic = null;
 
-let historyCountCharacteristic = null;
+let historyStatusCharacteristic = null;
 let historyIndexCharacteristic = null;
-let historyLastCharacteristic = null;
+let historyDataCharacteristic = null;
 let historyNotifyCharacteristic = null;
 
 let historyRecords = [];
+let historyStatusInfo = null;
 
-let historyWaiters = new Map();
+let historyResolve = null;
+let historyExpected = 0;
+let historyCollected = 0;
 
-let currentHistoryStart = null;
-let currentHistoryEnd = null;
 
 /* =========================================================
    DOM
 ========================================================= */
 
-const $ = id => document.getElementById(id);
+const connectBtn =
+  document.getElementById("connectBtn");
 
-const connectBtn = $("connectBtn");
-const disconnectBtn = $("disconnectBtn");
+const disconnectBtn =
+  document.getElementById("disconnectBtn");
 
-const connectionStatus = $("connectionStatus");
+const connectionStatus =
+  document.getElementById("connectionStatus");
 
-const liveTemp = $("liveTemp");
-const liveHumidity = $("liveHumidity");
-const liveVoltage = $("liveVoltage");
-const liveBattery = $("liveBattery");
+const liveTemp =
+  document.getElementById("liveTemp");
 
-const deviceTime = $("deviceTime");
-const timeInfo = $("timeInfo");
+const liveHumidity =
+  document.getElementById("liveHumidity");
 
-const readTimeBtn = $("readTimeBtn");
-const syncTimeBtn = $("syncTimeBtn");
+const liveVoltage =
+  document.getElementById("liveVoltage");
 
-const readHistoryStatusBtn =
-  $("readHistoryStatusBtn");
+const liveBattery =
+  document.getElementById("liveBattery");
 
-const readHistoryBtn =
-  $("readHistoryBtn");
+const liveStatus =
+  document.getElementById("liveStatus");
 
-const exportCsvBtn =
-  $("exportCsvBtn");
+const readTimeBtn =
+  document.getElementById("readTimeBtn");
 
-const clearHistoryBtn =
-  $("clearHistoryBtn");
+const syncTimeBtn =
+  document.getElementById("syncTimeBtn");
 
-const historyCountInput =
-  $("historyCount");
+const deviceTime =
+  document.getElementById("deviceTime");
+
+const historyStatusBtn =
+  document.getElementById("historyStatusBtn");
+
+const historyBtn =
+  document.getElementById("historyBtn");
+
+const csvBtn =
+  document.getElementById("csvBtn");
+
+const historyCount =
+  document.getElementById("historyCount");
 
 const historyStatus =
-  $("historyStatus");
+  document.getElementById("historyStatus");
+
+const historyProgressText =
+  document.getElementById("historyProgressText");
 
 const historyProgressBar =
-  $("historyProgressBar");
+  document.getElementById("historyProgressBar");
+
+const historySummary =
+  document.getElementById("historySummary");
 
 const historyTableBody =
-  $("historyTableBody");
+  document.getElementById("historyTableBody");
 
-const historyTotal =
-  $("historyTotal");
+const statMaxTemp =
+  document.getElementById("statMaxTemp");
 
-const historyStored =
-  $("historyStored");
+const statMinTemp =
+  document.getElementById("statMinTemp");
 
-const historyOldest =
-  $("historyOldest");
+const statMaxHumidity =
+  document.getElementById("statMaxHumidity");
 
-const historyNewest =
-  $("historyNewest");
+const statMinHumidity =
+  document.getElementById("statMinHumidity");
 
-const deviceInfo =
-  $("deviceInfo");
+const statAvgTemp =
+  document.getElementById("statAvgTemp");
 
-const ccc1Output =
-  $("ccc1Output");
+const statAvgHumidity =
+  document.getElementById("statAvgHumidity");
 
-const ccc4Output =
-  $("ccc4Output");
-
-const timeOutput =
-  $("timeOutput");
-
-const gattOutput =
-  $("gattOutput");
-
-const logOutput =
-  $("logOutput");
+const timePeriodStats =
+  document.getElementById("timePeriodStats");
 
 const loadModelBtn =
-  $("loadModelBtn");
+  document.getElementById("loadModelBtn");
 
 const analyzeBtn =
-  $("analyzeBtn");
+  document.getElementById("analyzeBtn");
 
 const aiStatus =
-  $("aiStatus");
+  document.getElementById("aiStatus");
 
 const aiProgressBar =
-  $("aiProgressBar");
+  document.getElementById("aiProgressBar");
 
 const aiProgressText =
-  $("aiProgressText");
+  document.getElementById("aiProgressText");
 
 const aiOutput =
-  $("aiOutput");
+  document.getElementById("aiOutput");
+
+const debugLog =
+  document.getElementById("debugLog");
+
 
 /* =========================================================
-   Utility
+   基本工具
 ========================================================= */
 
-function debug(message) {
-  const time =
-    new Date().toLocaleTimeString();
+function debug(text) {
+  const now =
+    new Date().toLocaleTimeString("zh-TW");
 
-  logOutput.textContent +=
-    `[${time}] ${message}\n`;
+  debugLog.textContent +=
+    `[${now}] ${text}\n`;
 
-  logOutput.scrollTop =
-    logOutput.scrollHeight;
-
-  console.log(message);
+  debugLog.scrollTop =
+    debugLog.scrollHeight;
 }
 
-function setStatus(message, type = "info") {
-  connectionStatus.textContent =
-    message;
+function setStatus(el, text, type = "") {
+  el.textContent = text;
+  el.className = "status";
 
-  connectionStatus.className =
-    "status " + type;
-}
-
-function setAIStatus(message, type = "info") {
-  aiStatus.textContent =
-    message;
-
-  aiStatus.className =
-    "status " + type;
+  if (type) {
+    el.classList.add(type);
+  }
 }
 
 function setProgress(percent, text = "") {
-  const value =
+  const p =
     Math.max(0, Math.min(100, percent));
 
   aiProgressBar.style.width =
-    value + "%";
+    `${p}%`;
 
   aiProgressText.textContent =
-    `${value.toFixed(1)}% ${text}`;
+    text;
 }
 
-function setHistoryProgress(percent) {
-  const value =
+function setHistoryProgress(percent, text = "") {
+  const p =
     Math.max(0, Math.min(100, percent));
 
   historyProgressBar.style.width =
-    value + "%";
+    `${p}%`;
+
+  historyProgressText.textContent =
+    text;
 }
 
-function formatDate(timestamp) {
-  return new Date(timestamp)
-    .toLocaleString("zh-TW", {
-      hour12: false
-    });
+function bytesToHex(data) {
+  return Array.from(data)
+    .map(v =>
+      v.toString(16).padStart(2, "0")
+    )
+    .join(" ");
 }
 
-function formatDateTimeForCsv(timestamp) {
-  return new Date(timestamp)
-    .toLocaleString("zh-TW", {
-      hour12: false
-    });
+function getDataView(event) {
+  return event.target.value;
 }
+
+function getInt16LE(view, offset) {
+  return view.getInt16(offset, true);
+}
+
+function getUint16LE(view, offset) {
+  return view.getUint16(offset, true);
+}
+
+function getUint32LE(view, offset) {
+  return view.getUint32(offset, true);
+}
+
 
 /* =========================================================
    WebGPU
 ========================================================= */
 
 function checkWebGPU() {
+
   if (!navigator.gpu) {
-    setAIStatus(
+
+    setStatus(
+      aiStatus,
       "此瀏覽器沒有可用的 WebGPU",
       "error"
     );
@@ -655,28 +719,31 @@ function checkWebGPU() {
   return true;
 }
 
+
 /* =========================================================
-   BLE Connect
+   連線
 ========================================================= */
 
-async function connect() {
+async function connectDevice() {
 
   try {
 
     if (!navigator.bluetooth) {
       throw new Error(
-        "此瀏覽器不支援 Web Bluetooth"
+        "此瀏覽器不支援 Web Bluetooth。"
       );
     }
 
     setStatus(
-      "正在搜尋裝置...",
-      "info"
+      connectionStatus,
+      "正在尋找藍牙裝置..."
     );
 
     device =
       await navigator.bluetooth.requestDevice({
+
         acceptAllDevices: true,
+
         optionalServices: [
           "generic_access",
           "generic_attribute",
@@ -687,12 +754,12 @@ async function connect() {
 
     debug(
       "選擇裝置：" +
-      (device.name || "Unknown")
+      (device.name || "(無名稱)")
     );
 
     device.addEventListener(
       "gattserverdisconnected",
-      onDisconnected
+      handleDisconnected
     );
 
     server =
@@ -702,6 +769,14 @@ async function connect() {
       await server.getPrimaryService(
         SERVICE_UUID
       );
+
+    debug(
+      "已取得服務：" +
+      SERVICE_UUID
+    );
+
+
+    /* 即時資料 */
 
     dataCharacteristic =
       await service.getCharacteristic(
@@ -715,138 +790,120 @@ async function connect() {
       handleLiveData
     );
 
+    debug(
+      "CCC1 即時資料通知已啟用"
+    );
+
+
+    /* 電池 */
+
     try {
+
       batteryCharacteristic =
         await service.getCharacteristic(
           BATTERY_UUID
         );
+
+      const batteryValue =
+        await batteryCharacteristic.readValue();
+
+      updateBattery(batteryValue);
+
+      debug(
+        "CCC4 電池：" +
+        batteryValue.getUint8(0) +
+        "%"
+      );
+
     } catch (e) {
-      batteryCharacteristic = null;
+
+      debug(
+        "CCC4 電池讀取失敗：" +
+        e.message
+      );
     }
 
-    try {
-      timeCharacteristic =
-        await service.getCharacteristic(
-          TIME_UUID
-        );
-    } catch (e) {
-      timeCharacteristic = null;
-    }
 
-    try {
-      historyCountCharacteristic =
-        await service.getCharacteristic(
-          HISTORY_COUNT_UUID
-        );
-    } catch (e) {
-      historyCountCharacteristic = null;
-    }
+    /* 時間 */
 
-    try {
-      historyIndexCharacteristic =
-        await service.getCharacteristic(
-          HISTORY_INDEX_UUID
-        );
-    } catch (e) {
-      historyIndexCharacteristic = null;
-    }
+    timeCharacteristic =
+      await service.getCharacteristic(
+        TIME_UUID
+      );
 
-    try {
-      historyLastCharacteristic =
-        await service.getCharacteristic(
-          HISTORY_LAST_UUID
-        );
-    } catch (e) {
-      historyLastCharacteristic = null;
-    }
 
-    try {
-      historyNotifyCharacteristic =
-        await service.getCharacteristic(
-          HISTORY_NOTIFY_UUID
-        );
-    } catch (e) {
-      historyNotifyCharacteristic = null;
-    }
+    /* 歷史 */
 
-    deviceInfo.textContent =
-      `名稱：${device.name || "Unknown"}\n` +
-      `ID：${device.id || "Unknown"}`;
+    historyStatusCharacteristic =
+      await service.getCharacteristic(
+        HISTORY_STATUS_UUID
+      );
+
+    historyIndexCharacteristic =
+      await service.getCharacteristic(
+        HISTORY_INDEX_UUID
+      );
+
+    historyDataCharacteristic =
+      await service.getCharacteristic(
+        HISTORY_DATA_UUID
+      );
+
+    historyNotifyCharacteristic =
+      await service.getCharacteristic(
+        HISTORY_NOTIFY_UUID
+      );
+
+    historyNotifyCharacteristic.addEventListener(
+      "characteristicvaluechanged",
+      handleHistoryNotification
+    );
+
 
     setStatus(
-      "已連線：" +
-      (device.name || "Unknown"),
+      connectionStatus,
+      `已連線：${device.name || "LYWSD02MMC"}`,
       "ok"
     );
 
     connectBtn.disabled = true;
     disconnectBtn.disabled = false;
 
-    readTimeBtn.disabled =
-      !timeCharacteristic;
+    readTimeBtn.disabled = false;
+    syncTimeBtn.disabled = false;
 
-    syncTimeBtn.disabled =
-      !timeCharacteristic;
+    historyStatusBtn.disabled = false;
+    historyBtn.disabled = false;
 
-    readHistoryStatusBtn.disabled =
-      !historyCountCharacteristic;
+    loadModelBtn.disabled =
+      !navigator.gpu;
 
-    readHistoryBtn.disabled =
-      !(
-        historyCountCharacteristic &&
-        historyIndexCharacteristic &&
-        historyNotifyCharacteristic
-      );
-
-    await scanGatt();
-
-    if (batteryCharacteristic) {
-      await readBattery();
-    }
-
-    debug("BLE 連線完成");
+    debug("藍牙連線完成。");
 
   } catch (error) {
 
     console.error(error);
 
     setStatus(
+      connectionStatus,
       "連線失敗：" + error.message,
       "error"
     );
 
     debug(
-      "連線錯誤：" +
+      "連線失敗：" +
       error.message
     );
   }
 }
 
-/* =========================================================
-   Disconnect
-========================================================= */
 
-function disconnect() {
-
-  try {
-
-    if (device?.gatt?.connected) {
-      device.gatt.disconnect();
-    }
-
-  } catch (e) {
-    debug(
-      "斷線錯誤：" +
-      e.message
-    );
-  }
-}
-
-function onDisconnected() {
+function handleDisconnected() {
 
   setStatus(
-    "裝置已斷線",
-    "error"
+    connectionStatus,
+    "裝置已中斷連線",
+    "warn"
   );
 
   connectBtn.disabled = false;
@@ -854,154 +911,172 @@ function onDisconnected() {
 
   readTimeBtn.disabled = true;
   syncTimeBtn.disabled = true;
-  readHistoryStatusBtn.disabled = true;
-  readHistoryBtn.disabled = true;
 
-  dataCharacteristic = null;
-  batteryCharacteristic = null;
-  timeCharacteristic = null;
+  historyStatusBtn.disabled = true;
+  historyBtn.disabled = true;
 
   debug("GATT disconnected");
 }
 
-/* =========================================================
-   Live Data CCC1
-========================================================= */
 
-function handleLiveData(event) {
-
-  const value =
-    event.target.value;
-
-  if (value.byteLength < 5) {
-    return;
-  }
-
-  const temperature =
-    value.getInt16(0, true) / 100;
-
-  const humidity =
-    value.getUint8(2);
-
-  const voltage =
-    value.getUint16(3, true);
-
-  liveTemp.textContent =
-    temperature.toFixed(2) + " °C";
-
-  liveHumidity.textContent =
-    humidity + " %";
-
-  liveVoltage.textContent =
-    voltage + " mV";
-
-  ccc1Output.textContent =
-    `HEX：${dataViewToHex(value)}\n` +
-    `溫度：${temperature.toFixed(2)} °C\n` +
-    `濕度：${humidity} %\n` +
-    `電壓：${voltage} mV`;
-}
-
-function dataViewToHex(view) {
-
-  const bytes = [];
-
-  for (let i = 0; i < view.byteLength; i++) {
-    bytes.push(
-      view.getUint8(i)
-        .toString(16)
-        .padStart(2, "0")
-    );
-  }
-
-  return bytes.join(" ");
-}
-
-/* =========================================================
-   Battery
-========================================================= */
-
-async function readBattery() {
-
-  if (!batteryCharacteristic) {
-    return;
-  }
+async function disconnectDevice() {
 
   try {
 
-    const value =
-      await batteryCharacteristic.readValue();
-
-    const battery =
-      value.getUint8(0);
-
-    liveBattery.textContent =
-      battery + " %";
-
-    ccc4Output.textContent =
-      `HEX：${dataViewToHex(value)}\n` +
-      `電池：${battery}%`;
+    if (
+      device &&
+      device.gatt &&
+      device.gatt.connected
+    ) {
+      device.gatt.disconnect();
+    }
 
   } catch (e) {
 
     debug(
-      "讀取 CCC4 失敗：" +
+      "中斷連線錯誤：" +
       e.message
     );
   }
 }
 
+
 /* =========================================================
-   Time
+   即時資料 CCC1
+   27 0b 4b ef 0b
+   溫度 = int16 LE /100
+   濕度 = byte 2
+   電壓 = uint16 LE
+========================================================= */
+
+function handleLiveData(event) {
+
+  const view =
+    getDataView(event);
+
+  if (view.byteLength < 5) {
+    return;
+  }
+
+  const temp =
+    getInt16LE(view, 0) / 100;
+
+  const humidity =
+    view.getUint8(2);
+
+  const voltage =
+    getUint16LE(view, 3);
+
+  liveTemp.textContent =
+    `${temp.toFixed(2)} °C`;
+
+  liveHumidity.textContent =
+    `${humidity} %`;
+
+  liveVoltage.textContent =
+    `${voltage} mV`;
+
+  setStatus(
+    liveStatus,
+    `即時資料：${temp.toFixed(2)}°C / ${humidity}% / ${voltage}mV`,
+    "ok"
+  );
+
+  debug(
+    `CCC1：${bytesToHex(
+      new Uint8Array(
+        view.buffer,
+        view.byteOffset,
+        view.byteLength
+      )
+    )} → ${temp.toFixed(2)}°C / ${humidity}% / ${voltage}mV`
+  );
+}
+
+
+function updateBattery(view) {
+
+  if (!view || view.byteLength < 1) {
+    return;
+  }
+
+  const battery =
+    view.getUint8(0);
+
+  liveBattery.textContent =
+    `${battery} %`;
+}
+
+
+/* =========================================================
+   裝置時間
+   5 bytes：
+   4 bytes Unix timestamp LE
+   1 byte timezone offset
 ========================================================= */
 
 async function readTime() {
 
-  if (!timeCharacteristic) {
-    return;
-  }
-
   try {
 
-    const value =
+    if (!timeCharacteristic) {
+      return;
+    }
+
+    const view =
       await timeCharacteristic.readValue();
 
-    if (value.byteLength < 5) {
+    if (view.byteLength < 5) {
       throw new Error(
         "時間資料長度不足"
       );
     }
 
     const timestamp =
-      value.getUint32(0, true);
+      getUint32LE(view, 0);
 
     const timezone =
-      value.getInt8(4);
+      view.getInt8(4);
 
     const date =
       new Date(
         (timestamp + timezone * 3600) * 1000
       );
 
-    deviceTime.textContent =
-      "裝置時間：" +
+    const text =
       date.toLocaleString(
         "zh-TW",
-        { hour12: false }
+        {
+          hour12: false
+        }
       );
 
-    timeInfo.textContent =
-      `Unix：${timestamp} / 時區：UTC${timezone >= 0 ? "+" : ""}${timezone}`;
+    deviceTime.textContent =
+      `裝置時間：${text}\nUnix：${timestamp}\n時區：UTC${timezone >= 0 ? "+" : ""}${timezone}`;
 
-    timeOutput.textContent =
-      `HEX：${dataViewToHex(value)}\n` +
-      `Unix：${timestamp}\n` +
-      `Timezone：UTC${timezone >= 0 ? "+" : ""}${timezone}\n` +
-      `時間：${date.toLocaleString("zh-TW", {
-        hour12: false
-      })}`;
+    setStatus(
+      deviceTime,
+      deviceTime.textContent,
+      "ok"
+    );
+
+    debug(
+      `CCB7 讀取：${bytesToHex(
+        new Uint8Array(
+          view.buffer,
+          view.byteOffset,
+          view.byteLength
+        )
+      )}`
+    );
 
   } catch (e) {
+
+    setStatus(
+      deviceTime,
+      "讀取時間失敗：" + e.message,
+      "error"
+    );
 
     debug(
       "讀取時間失敗：" +
@@ -1010,19 +1085,25 @@ async function readTime() {
   }
 }
 
-async function syncTime() {
 
-  if (!timeCharacteristic) {
-    return;
-  }
+async function syncTime() {
 
   try {
 
+    if (!timeCharacteristic) {
+      return;
+    }
+
     const now =
-      Math.floor(Date.now() / 1000);
+      new Date();
+
+    const unix =
+      Math.floor(
+        Date.now() / 1000
+      );
 
     const timezone =
-      -new Date().getTimezoneOffset() / 60;
+      -now.getTimezoneOffset() / 60;
 
     const buffer =
       new ArrayBuffer(5);
@@ -1032,7 +1113,7 @@ async function syncTime() {
 
     view.setUint32(
       0,
-      now,
+      unix,
       true
     );
 
@@ -1042,21 +1123,29 @@ async function syncTime() {
     );
 
     await timeCharacteristic.writeValue(
-      buffer
+      new Uint8Array(buffer)
     );
 
     debug(
-      `已同步時間：${now} / timezone=${timezone}`
+      `CCB7 寫入時間：${bytesToHex(
+        new Uint8Array(buffer)
+      )}`
     );
 
     await new Promise(
       resolve =>
-        setTimeout(resolve, 300)
+        setTimeout(resolve, 500)
     );
 
     await readTime();
 
   } catch (e) {
+
+    setStatus(
+      deviceTime,
+      "同步時間失敗：" + e.message,
+      "error"
+    );
 
     debug(
       "同步時間失敗：" +
@@ -1065,291 +1154,235 @@ async function syncTime() {
   }
 }
 
-/* =========================================================
-   GATT Scan
-========================================================= */
-
-async function scanGatt() {
-
-  if (!service) {
-    return;
-  }
-
-  try {
-
-    const characteristics =
-      await service.getCharacteristics();
-
-    let output = "";
-
-    for (const characteristic of characteristics) {
-
-      output +=
-        `${characteristic.uuid}\n`;
-
-      output +=
-        `  properties: ` +
-        `${JSON.stringify(
-          characteristic.properties
-        )}\n\n`;
-    }
-
-    gattOutput.textContent =
-      output;
-
-  } catch (e) {
-
-    gattOutput.textContent =
-      "GATT 掃描失敗：" +
-      e.message;
-  }
-}
 
 /* =========================================================
-   History Status
+   歷史狀態 CCB9
+   f2 2c 00 00 f3 0e 00 00
 ========================================================= */
 
 async function readHistoryStatus() {
 
-  if (!historyCountCharacteristic) {
-    return;
-  }
-
   try {
 
-    const value =
-      await historyCountCharacteristic.readValue();
+    if (!historyStatusCharacteristic) {
+      return;
+    }
 
-    if (value.byteLength < 8) {
+    const view =
+      await historyStatusCharacteristic.readValue();
+
+    if (view.byteLength < 8) {
       throw new Error(
         "歷史狀態資料長度不足"
       );
     }
 
-    const total =
-      value.getUint32(0, true);
+    const totalRecords =
+      getUint32LE(view, 0);
 
-    const stored =
-      value.getUint32(4, true);
+    const storedRecords =
+      getUint32LE(view, 4);
 
-    const oldest =
-      stored > 0
-        ? total - stored + 1
+    const oldestIndex =
+      storedRecords > 0
+        ? getUint32LE(view, 4)
         : 0;
 
-    const newest =
-      total;
+    /*
+      實際裝置回傳格式目前觀察為：
 
-    historyTotal.textContent =
-      total;
+      bytes 0-3 = total records
+      bytes 4-7 = stored records
 
-    historyStored.textContent =
-      stored;
+      若有額外欄位，以下會嘗試讀取。
+    */
 
-    historyOldest.textContent =
-      oldest;
+    let newestIndex = null;
 
-    historyNewest.textContent =
-      newest;
+    if (view.byteLength >= 16) {
+      newestIndex =
+        getUint32LE(view, 12);
+    }
 
-    debug(
-      `歷史狀態：total=${total}, stored=${stored}, oldest=${oldest}, newest=${newest}`
+    historyStatusInfo = {
+      totalRecords,
+      storedRecords,
+      oldestIndex,
+      newestIndex
+    };
+
+    setStatus(
+      historyStatus,
+      `總紀錄數：${totalRecords}\n` +
+      `目前儲存：${storedRecords}\n` +
+      `原始資料：${bytesToHex(
+        new Uint8Array(
+          view.buffer,
+          view.byteOffset,
+          view.byteLength
+        )
+      )}`,
+      "ok"
     );
 
-    historyStatus.textContent =
-      `共有 ${stored} 筆可讀歷史資料，索引 ${oldest} ～ ${newest}`;
+    debug(
+      `CCB9：${bytesToHex(
+        new Uint8Array(
+          view.buffer,
+          view.byteOffset,
+          view.byteLength
+        )
+      )}`
+    );
 
   } catch (e) {
 
-    debug(
+    setStatus(
+      historyStatus,
       "讀取歷史狀態失敗：" +
-      e.message
+      e.message,
+      "error"
     );
-  }
-}
-
-/* =========================================================
-   History Notification
-========================================================= */
-
-async function startHistoryNotifications() {
-
-  if (!historyNotifyCharacteristic) {
-    throw new Error(
-      "找不到 CCBC"
-    );
-  }
-
-  await historyNotifyCharacteristic.startNotifications();
-
-  historyNotifyCharacteristic.removeEventListener(
-    "characteristicvaluechanged",
-    handleHistoryNotification
-  );
-
-  historyNotifyCharacteristic.addEventListener(
-    "characteristicvaluechanged",
-    handleHistoryNotification
-  );
-}
-
-function handleHistoryNotification(event) {
-
-  const value =
-    event.target.value;
-
-  try {
-
-    const record =
-      parseHistoryRecord(value);
-
-    if (!record) {
-      return;
-    }
-
-    addHistoryRecord(record);
-
-    const waiter =
-      historyWaiters.get(record.index);
-
-    if (waiter) {
-      historyWaiters.delete(
-        record.index
-      );
-
-      waiter(record);
-    }
-
-  } catch (e) {
 
     debug(
-      "解析歷史通知失敗：" +
+      "CCB9 失敗：" +
       e.message
     );
   }
 }
 
+
 /* =========================================================
-   History Parser
+   歷史資料格式 14 bytes
+
+   bytes 0-3   index uint32 LE
+   bytes 4-7   Unix timestamp uint32 LE
+   bytes 8-9   MAX temp int16 LE /10
+   byte 10     MAX RH
+   bytes 11-12 MIN temp int16 LE /10
+   byte 13     MIN RH
 ========================================================= */
 
-function parseHistoryRecord(value) {
+function parseHistoryRecord(view) {
 
-  if (value.byteLength < 14) {
+  if (view.byteLength < 14) {
     return null;
   }
 
   const index =
-    value.getUint32(0, true);
+    getUint32LE(view, 0);
 
   const timestamp =
-    value.getUint32(4, true);
+    getUint32LE(view, 4);
 
-  const maxTemperature =
-    value.getInt16(8, true) / 10;
+  const maxTemp =
+    getInt16LE(view, 8) / 10;
 
   const maxHumidity =
-    value.getUint8(10);
+    view.getUint8(10);
 
-  const minTemperature =
-    value.getInt16(11, true) / 10;
+  const minTemp =
+    getInt16LE(view, 11) / 10;
 
   const minHumidity =
-    value.getUint8(13);
+    view.getUint8(13);
+
+  const date =
+    new Date(timestamp * 1000);
 
   return {
     index,
-    timestamp: timestamp * 1000,
-    minTemperature,
-    minHumidity,
-    maxTemperature,
-    maxHumidity
+    timestamp,
+    date,
+    maxTemp,
+    maxHumidity,
+    minTemp,
+    minHumidity
   };
 }
 
+
 /* =========================================================
-   Add History
+   歷史通知 CCBC
 ========================================================= */
 
-function addHistoryRecord(record) {
+function handleHistoryNotification(event) {
 
-  if (
-    currentHistoryStart !== null &&
-    currentHistoryEnd !== null
-  ) {
+  const view =
+    event.target.value;
 
-    if (
-      record.index < currentHistoryStart ||
-      record.index > currentHistoryEnd
-    ) {
-      return;
+  const record =
+    parseHistoryRecord(view);
+
+  if (!record) {
+    debug(
+      "CCBC 收到無法解析的資料：" +
+      bytesToHex(
+        new Uint8Array(
+          view.buffer,
+          view.byteOffset,
+          view.byteLength
+        )
+      )
+    );
+
+    return;
+  }
+
+  debug(
+    `CCBC：index=${record.index} ` +
+    `${formatDate(record.date)} ` +
+    `MAX=${record.maxTemp.toFixed(1)}°C/${record.maxHumidity}% ` +
+    `MIN=${record.minTemp.toFixed(1)}°C/${record.minHumidity}%`
+  );
+
+  if (historyResolve) {
+
+    const exists =
+      historyRecords.some(
+        r => r.index === record.index
+      );
+
+    if (!exists) {
+
+      historyRecords.push(record);
+
+      historyCollected =
+        historyRecords.length;
+
+      const percent =
+        historyExpected > 0
+          ? historyCollected /
+            historyExpected * 100
+          : 0;
+
+      setHistoryProgress(
+        percent,
+        `已收到 ${historyCollected} / ${historyExpected} 筆`
+      );
+
+      if (
+        historyCollected >=
+        historyExpected
+      ) {
+
+        const resolve =
+          historyResolve;
+
+        historyResolve = null;
+
+        resolve();
+      }
     }
   }
-
-  const exists =
-    historyRecords.some(
-      r => r.index === record.index
-    );
-
-  if (!exists) {
-    historyRecords.push(record);
-  }
 }
 
-/* =========================================================
-   Wait History Record
-========================================================= */
-
-function waitForHistoryRecord(
-  index,
-  timeout = 1500
-) {
-
-  return new Promise(resolve => {
-
-    let finished = false;
-
-    const timer =
-      setTimeout(() => {
-
-        if (finished) {
-          return;
-        }
-
-        finished = true;
-        historyWaiters.delete(index);
-        resolve(null);
-
-      }, timeout);
-
-    historyWaiters.set(
-      index,
-      record => {
-
-        if (finished) {
-          return;
-        }
-
-        finished = true;
-        clearTimeout(timer);
-
-        resolve(record);
-      }
-    );
-  });
-}
 
 /* =========================================================
-   Write History Index
+   寫入歷史索引
 ========================================================= */
 
 async function writeHistoryIndex(index) {
-
-  if (!historyIndexCharacteristic) {
-    throw new Error(
-      "找不到 CCBA"
-    );
-  }
 
   const buffer =
     new ArrayBuffer(4);
@@ -1364,803 +1397,923 @@ async function writeHistoryIndex(index) {
   );
 
   await historyIndexCharacteristic.writeValue(
-    buffer
+    new Uint8Array(buffer)
+  );
+
+  debug(
+    `CCBA 寫入 index=${index}：` +
+    bytesToHex(
+      new Uint8Array(buffer)
+    )
   );
 }
 
+
 /* =========================================================
-   Read History By Index
+   直接讀取 CCBB
 ========================================================= */
 
-async function readHistoryByIndex(index) {
+async function readHistoryRecordDirect(index) {
 
-  const waiter =
-    waitForHistoryRecord(
-      index,
-      1500
+  try {
+
+    await writeHistoryIndex(index);
+
+    await new Promise(
+      resolve =>
+        setTimeout(resolve, 80)
     );
 
-  await writeHistoryIndex(index);
+    const view =
+      await historyDataCharacteristic.readValue();
 
-  let record =
-    await waiter;
+    const record =
+      parseHistoryRecord(view);
 
-  if (record) {
-    return record;
-  }
-
-  if (historyLastCharacteristic) {
-
-    try {
-
-      const value =
-        await historyLastCharacteristic.readValue();
-
-      const parsed =
-        parseHistoryRecord(value);
-
-      if (
-        parsed &&
-        parsed.index === index
-      ) {
-        return parsed;
-      }
-
-    } catch (e) {
+    if (record) {
 
       debug(
-        `CCBB 讀取 ${index} 失敗：${e.message}`
+        `CCBB index=${record.index} ` +
+        `${formatDate(record.date)}`
       );
+
+      return record;
     }
+
+  } catch (e) {
+
+    debug(
+      `CCBB index=${index} 讀取失敗：` +
+      e.message
+    );
   }
 
   return null;
 }
 
+
 /* =========================================================
-   Read History
+   讀取歷史
 ========================================================= */
 
 async function readHistory() {
 
-  if (
-    !historyCountCharacteristic ||
-    !historyIndexCharacteristic ||
-    !historyNotifyCharacteristic
-  ) {
-    return;
-  }
-
   try {
 
-    let count =
-      parseInt(
-        historyCountInput.value,
-        10
-      );
+    if (
+      !historyStatusInfo ||
+      historyStatusInfo.storedRecords <= 0
+    ) {
+
+      await readHistoryStatus();
+    }
 
     if (
-      !Number.isFinite(count) ||
-      count < 1
+      !historyStatusInfo ||
+      historyStatusInfo.storedRecords <= 0
     ) {
+
+      throw new Error(
+        "裝置沒有可讀取的歷史資料。"
+      );
+    }
+
+    let count =
+      Number(historyCount.value);
+
+    if (!Number.isFinite(count)) {
       count = 24;
     }
 
     count =
-      Math.min(24, count);
+      Math.max(
+        1,
+        Math.min(24, Math.floor(count))
+      );
 
-    historyCountInput.value =
+    historyCount.value =
       count;
-
-    await readHistoryStatus();
-
-    const total =
-      parseInt(
-        historyTotal.textContent,
-        10
-      );
-
-    const stored =
-      parseInt(
-        historyStored.textContent,
-        10
-      );
-
-    if (
-      !Number.isFinite(total) ||
-      !Number.isFinite(stored) ||
-      stored <= 0
-    ) {
-      throw new Error(
-        "沒有可讀的歷史資料"
-      );
-    }
-
-    const oldest =
-      total - stored + 1;
-
-    const newest =
-      total;
-
-    const actualCount =
-      Math.min(
-        count,
-        stored
-      );
-
-    const startIndex =
-      newest - actualCount + 1;
-
-    currentHistoryStart =
-      startIndex;
-
-    currentHistoryEnd =
-      newest;
 
     historyRecords = [];
 
-    historyWaiters.clear();
-
-    renderHistoryTable();
-
-    setHistoryProgress(0);
-
-    historyStatus.textContent =
-      `準備讀取 ${actualCount} 筆歷史資料...`;
-
-    await startHistoryNotifications();
-
-    /*
-      只寫一次 CCBA。
-      CCBC 會從指定 index 開始串流後續紀錄。
-    */
-
-    await writeHistoryIndex(
-      startIndex
+    setHistoryProgress(
+      0,
+      "正在啟用歷史通知..."
     );
 
-    historyStatus.textContent =
-      `正在接收 ${startIndex} ～ ${newest}...`;
+    await historyNotifyCharacteristic.startNotifications();
 
-    /*
-      等待裝置串流。
-      24 筆資料通常不需要很久。
-    */
+    const newest =
+      historyStatusInfo.newestIndex != null
+        ? historyStatusInfo.newestIndex
+        : historyStatusInfo.totalRecords;
 
-    const streamWait =
+    const startIndex =
       Math.max(
-        3000,
-        actualCount * 180
+        0,
+        newest - count + 1
       );
 
-    const startTime =
-      Date.now();
+    historyExpected =
+      count;
 
-    while (
-      Date.now() - startTime <
-      streamWait
-    ) {
-
-      const received =
-        historyRecords.filter(
-          r =>
-            r.index >= startIndex &&
-            r.index <= newest
-        ).length;
-
-      setHistoryProgress(
-        received /
-        actualCount *
-        100
-      );
-
-      historyStatus.textContent =
-        `正在接收歷史資料：${received}/${actualCount}`;
-
-      if (
-        received >= actualCount
-      ) {
-        break;
-      }
-
-      await new Promise(
-        resolve =>
-          setTimeout(
-            resolve,
-            150
-          )
-      );
-    }
+    historyCollected = 0;
 
     /*
-      如果 CCBC 沒有完整送出，
-      對缺少的 index 逐筆 fallback。
+      先寫一次開始索引。
+      裝置會透過 CCBC 連續送出後續紀錄。
     */
 
-    const receivedIndexes =
-      new Set(
-        historyRecords.map(
-          r => r.index
-        )
-      );
+    historyResolve =
+      new Promise(resolve => {
+        historyResolve = resolve;
+      });
+
+    await writeHistoryIndex(startIndex);
+
+    setHistoryProgress(
+      0,
+      `等待歷史資料：${startIndex} 起`
+    );
+
+    /*
+      等待最多 8 秒。
+    */
+
+    await Promise.race([
+      historyResolve,
+      new Promise(resolve =>
+        setTimeout(resolve, 8000)
+      )
+    ]);
+
+    historyResolve = null;
+
+    /*
+      如果通知沒有收齊，
+      再用 CCBA + CCBB 逐筆補資料。
+    */
 
     for (
-      let index = startIndex;
-      index <= newest;
-      index++
+      let i = startIndex;
+      i <= newest &&
+      historyRecords.length < count;
+      i++
     ) {
 
-      if (
-        receivedIndexes.has(index)
-      ) {
+      const exists =
+        historyRecords.some(
+          r => r.index === i
+        );
+
+      if (exists) {
         continue;
       }
 
-      historyStatus.textContent =
-        `補讀缺少資料：${index}`;
-
       const record =
-        await readHistoryByIndex(
-          index
-        );
+        await readHistoryRecordDirect(i);
 
       if (record) {
-        addHistoryRecord(record);
+
+        const duplicate =
+          historyRecords.some(
+            r => r.index === record.index
+          );
+
+        if (!duplicate) {
+
+          historyRecords.push(record);
+
+          historyCollected =
+            historyRecords.length;
+
+          setHistoryProgress(
+            historyCollected /
+              count * 100,
+            `補讀 ${historyCollected} / ${count} 筆`
+          );
+        }
       }
-
-      const received =
-        historyRecords.filter(
-          r =>
-            r.index >= startIndex &&
-            r.index <= newest
-        ).length;
-
-      setHistoryProgress(
-        received /
-        actualCount *
-        100
-      );
     }
+
+    /*
+      只保留指定數量。
+    */
 
     historyRecords =
       historyRecords
-        .filter(
-          r =>
-            r.index >= startIndex &&
-            r.index <= newest
-        )
         .sort(
           (a, b) =>
-            a.index - b.index
-        );
+            a.timestamp - b.timestamp
+        )
+        .slice(-count);
 
-    renderHistoryTable();
+    setHistoryProgress(
+      100,
+      `完成，共 ${historyRecords.length} 筆`
+    );
 
-    exportCsvBtn.disabled =
+    renderHistory();
+
+    csvBtn.disabled =
       historyRecords.length === 0;
 
     analyzeBtn.disabled =
-      !(
-        state.engine &&
-        historyRecords.length > 0
-      );
-
-    const finalCount =
-      historyRecords.length;
-
-    setHistoryProgress(100);
-
-    historyStatus.textContent =
-      `完成：成功取得 ${finalCount}/${actualCount} 筆`;
+      !state.engine ||
+      historyRecords.length === 0;
 
     debug(
-      `歷史資料完成：${finalCount}/${actualCount}`
+      `歷史資料讀取完成，共 ${historyRecords.length} 筆`
     );
 
   } catch (e) {
 
-    console.error(e);
+    historyResolve = null;
 
-    historyStatus.textContent =
-      "讀取失敗：" +
-      e.message;
+    setHistoryProgress(
+      0,
+      "歷史資料讀取失敗"
+    );
+
+    setStatus(
+      historyStatus,
+      "讀取歷史資料失敗：" +
+      e.message,
+      "error"
+    );
 
     debug(
-      "歷史資料讀取失敗：" +
+      "歷史資料失敗：" +
       e.message
     );
   }
 }
 
+
 /* =========================================================
-   Render History
+   日期格式
 ========================================================= */
 
-function renderHistoryTable() {
+function formatDate(date) {
 
-  historyTableBody.innerHTML = "";
-
-  historyRecords.forEach(
-    (record, index) => {
-
-      const tr =
-        document.createElement("tr");
-
-      tr.innerHTML = `
-        <td>${index + 1}</td>
-        <td>${record.index}</td>
-        <td>${formatDate(record.timestamp)}</td>
-        <td>${record.minTemperature.toFixed(1)} °C</td>
-        <td>${record.minHumidity} %</td>
-        <td>${record.maxTemperature.toFixed(1)} °C</td>
-        <td>${record.maxHumidity} %</td>
-      `;
-
-      historyTableBody.appendChild(tr);
+  return date.toLocaleString(
+    "zh-TW",
+    {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
     }
   );
 }
 
+function formatHour(date) {
+
+  return date
+    .getHours()
+    .toString()
+    .padStart(2, "0") + ":00";
+}
+
+
 /* =========================================================
-   CSV
+   顯示歷史
 ========================================================= */
 
-function exportCsv() {
+function renderHistory() {
+
+  historyTableBody.innerHTML = "";
 
   if (!historyRecords.length) {
+
+    historySummary.textContent =
+      "沒有歷史資料";
+
     return;
   }
 
-  const rows = [
-    [
-      "Index",
-      "時間",
-      "最低溫",
-      "最低濕度",
-      "最高溫",
-      "最高濕度"
-    ]
-  ];
+  const first =
+    historyRecords[0];
 
-  historyRecords.forEach(record => {
+  const last =
+    historyRecords[
+      historyRecords.length - 1
+    ];
 
-    rows.push([
-      record.index,
-      formatDateTimeForCsv(
-        record.timestamp
-      ),
-      record.minTemperature.toFixed(1),
-      record.minHumidity,
-      record.maxTemperature.toFixed(1),
-      record.maxHumidity
-    ]);
-  });
+  historySummary.textContent =
+    `共 ${historyRecords.length} 筆｜` +
+    `${formatDate(first.date)} ～ ${formatDate(last.date)}`;
 
-  const csv =
-    "\uFEFF" +
-    rows
-      .map(
-        row =>
-          row
-            .map(
-              value =>
-                `"${String(value).replace(
-                  /"/g,
-                  '""'
-                )}"`
-            )
-            .join(",")
-      )
-      .join("\n");
+  for (const record of historyRecords) {
 
-  const blob =
-    new Blob(
-      [csv],
-      {
-        type:
-          "text/csv;charset=utf-8;"
-      }
-    );
+    const tr =
+      document.createElement("tr");
 
-  const url =
-    URL.createObjectURL(blob);
+    tr.innerHTML = `
+      <td>${record.index}</td>
+      <td>${formatDate(record.date)}</td>
+      <td>${record.maxTemp.toFixed(1)} °C</td>
+      <td>${record.maxHumidity} %</td>
+      <td>${record.minTemp.toFixed(1)} °C</td>
+      <td>${record.minHumidity} %</td>
+    `;
 
-  const a =
-    document.createElement("a");
+    historyTableBody.appendChild(tr);
+  }
 
-  a.href = url;
-
-  a.download =
-    `LYWSD02MMC_history_${Date.now()}.csv`;
-
-  document.body.appendChild(a);
-
-  a.click();
-
-  a.remove();
-
-  URL.revokeObjectURL(url);
+  calculateStats();
 }
 
-/* =========================================================
-   Clear History
-========================================================= */
-
-function clearHistory() {
-
-  historyRecords = [];
-
-  historyWaiters.clear();
-
-  currentHistoryStart = null;
-  currentHistoryEnd = null;
-
-  renderHistoryTable();
-
-  exportCsvBtn.disabled = true;
-
-  analyzeBtn.disabled = true;
-
-  setHistoryProgress(0);
-
-  historyStatus.textContent =
-    "歷史資料已清除";
-
-  aiOutput.textContent =
-    "尚未分析";
-}
 
 /* =========================================================
-   AI Statistics
+   數值統計
 ========================================================= */
 
-function analyzeHistoryStats(records) {
+function calculateStats() {
 
-  if (!records.length) {
+  if (!historyRecords.length) {
     return null;
   }
 
-  const temperatures = [];
+  let maxTempRecord =
+    historyRecords[0];
 
-  const humidities = [];
+  let minTempRecord =
+    historyRecords[0];
 
-  for (const r of records) {
+  let maxHumidityRecord =
+    historyRecords[0];
 
-    temperatures.push(
-      r.minTemperature,
-      r.maxTemperature
-    );
+  let minHumidityRecord =
+    historyRecords[0];
 
-    humidities.push(
-      r.minHumidity,
-      r.maxHumidity
-    );
+  let tempSum = 0;
+  let humiditySum = 0;
+  let tempCount = 0;
+  let humidityCount = 0;
+
+  for (const r of historyRecords) {
+
+    if (r.maxTemp > maxTempRecord.maxTemp) {
+      maxTempRecord = r;
+    }
+
+    if (r.minTemp < minTempRecord.minTemp) {
+      minTempRecord = r;
+    }
+
+    if (
+      r.maxHumidity >
+      maxHumidityRecord.maxHumidity
+    ) {
+      maxHumidityRecord = r;
+    }
+
+    if (
+      r.minHumidity <
+      minHumidityRecord.minHumidity
+    ) {
+      minHumidityRecord = r;
+    }
+
+    /*
+      每筆歷史資料是 MAX/MIN。
+      使用 MAX 與 MIN 的中間值作為該筆代表溫度，
+      濕度同理。
+    */
+
+    const representativeTemp =
+      (
+        r.maxTemp +
+        r.minTemp
+      ) / 2;
+
+    const representativeHumidity =
+      (
+        r.maxHumidity +
+        r.minHumidity
+      ) / 2;
+
+    tempSum +=
+      representativeTemp;
+
+    humiditySum +=
+      representativeHumidity;
+
+    tempCount++;
+    humidityCount++;
   }
 
-  const tempMin =
-    Math.min(...temperatures);
+  const avgTemp =
+    tempSum / tempCount;
 
-  const tempMax =
-    Math.max(...temperatures);
+  const avgHumidity =
+    humiditySum / humidityCount;
 
-  const tempAverage =
-    temperatures.reduce(
-      (a, b) => a + b,
-      0
-    ) / temperatures.length;
+  statMaxTemp.textContent =
+    `${maxTempRecord.maxTemp.toFixed(1)} °C`;
 
-  const rhMin =
-    Math.min(...humidities);
+  statMinTemp.textContent =
+    `${minTempRecord.minTemp.toFixed(1)} °C`;
 
-  const rhMax =
-    Math.max(...humidities);
+  statMaxHumidity.textContent =
+    `${maxHumidityRecord.maxHumidity} %`;
 
-  const rhAverage =
-    humidities.reduce(
-      (a, b) => a + b,
-      0
-    ) / humidities.length;
+  statMinHumidity.textContent =
+    `${minHumidityRecord.minHumidity} %`;
 
-  const sorted =
-    [...records].sort(
-      (a, b) =>
-        a.timestamp - b.timestamp
-    );
+  statAvgTemp.textContent =
+    `${avgTemp.toFixed(1)} °C`;
 
-  let maxRise = {
-    value: -Infinity,
-    from: null,
-    to: null
+  statAvgHumidity.textContent =
+    `${avgHumidity.toFixed(1)} %`;
+
+  const dailyAverage =
+    calculateDailyAverage();
+
+  const periodStats =
+    calculateTimePeriodStats();
+
+  renderTimePeriodStats(
+    periodStats
+  );
+
+  return {
+    maxTempRecord,
+    minTempRecord,
+    maxHumidityRecord,
+    minHumidityRecord,
+    avgTemp,
+    avgHumidity,
+    dailyAverage,
+    periodStats
   };
+}
 
-  let maxFall = {
-    value: Infinity,
-    from: null,
-    to: null
-  };
 
-  let maxRhChange = {
-    value: -Infinity,
-    from: null,
-    to: null
-  };
+/* =========================================================
+   每日平均
+========================================================= */
 
-  for (
-    let i = 1;
-    i < sorted.length;
-    i++
-  ) {
+function calculateDailyAverage() {
 
-    const previous =
-      (
-        sorted[i - 1].minTemperature +
-        sorted[i - 1].maxTemperature
-      ) / 2;
+  const groups = {};
 
-    const current =
-      (
-        sorted[i].minTemperature +
-        sorted[i].maxTemperature
-      ) / 2;
+  for (const r of historyRecords) {
 
-    const temperatureChange =
-      current - previous;
-
-    if (
-      temperatureChange >
-      maxRise.value
-    ) {
-
-      maxRise = {
-        value: temperatureChange,
-        from: sorted[i - 1],
-        to: sorted[i]
-      };
-    }
-
-    if (
-      temperatureChange <
-      maxFall.value
-    ) {
-
-      maxFall = {
-        value: temperatureChange,
-        from: sorted[i - 1],
-        to: sorted[i]
-      };
-    }
-
-    const previousRh =
-      (
-        sorted[i - 1].minHumidity +
-        sorted[i - 1].maxHumidity
-      ) / 2;
-
-    const currentRh =
-      (
-        sorted[i].minHumidity +
-        sorted[i].maxHumidity
-      ) / 2;
-
-    const rhChange =
-      Math.abs(
-        currentRh - previousRh
+    const dateKey =
+      r.date.toLocaleDateString(
+        "sv-SE"
       );
 
-    if (
-      rhChange >
-      maxRhChange.value
-    ) {
+    if (!groups[dateKey]) {
 
-      maxRhChange = {
-        value: rhChange,
-        from: sorted[i - 1],
-        to: sorted[i]
-      };
-    }
-  }
-
-  /*
-    每日平均
-  */
-
-  const daily = {};
-
-  for (const r of sorted) {
-
-    const date =
-      new Date(
-        r.timestamp
-      )
-        .toISOString()
-        .slice(0, 10);
-
-    const temperature =
-      (
-        r.minTemperature +
-        r.maxTemperature
-      ) / 2;
-
-    const humidity =
-      (
-        r.minHumidity +
-        r.maxHumidity
-      ) / 2;
-
-    if (!daily[date]) {
-      daily[date] = {
-        temperatureSum: 0,
+      groups[dateKey] = {
+        tempSum: 0,
         humiditySum: 0,
         count: 0
       };
     }
 
-    daily[date].temperatureSum +=
-      temperature;
+    const temp =
+      (
+        r.maxTemp +
+        r.minTemp
+      ) / 2;
 
-    daily[date].humiditySum +=
+    const humidity =
+      (
+        r.maxHumidity +
+        r.minHumidity
+      ) / 2;
+
+    groups[dateKey].tempSum +=
+      temp;
+
+    groups[dateKey].humiditySum +=
       humidity;
 
-    daily[date].count++;
+    groups[dateKey].count++;
   }
 
-  const dailyAverage =
-    Object.entries(daily)
-      .map(
-        ([date, value]) => ({
-          date,
-          temperature:
-            value.temperatureSum /
-            value.count,
-          humidity:
-            value.humiditySum /
-            value.count
-        })
-      )
-      .sort(
-        (a, b) =>
-          a.date.localeCompare(b.date)
-      );
-
-  return {
-    count: records.length,
-
-    start: sorted[0],
-
-    end: sorted[sorted.length - 1],
-
-    temperature: {
-      min: tempMin,
-      max: tempMax,
-      average: tempAverage
-    },
-
-    humidity: {
-      min: rhMin,
-      max: rhMax,
-      average: rhAverage
-    },
-
-    maxRise,
-    maxFall,
-    maxRhChange,
-
-    dailyAverage
-  };
+  return Object.entries(groups)
+    .sort(([a], [b]) =>
+      a.localeCompare(b)
+    )
+    .map(
+      ([date, v]) => ({
+        date,
+        temperature:
+          v.tempSum / v.count,
+        humidity:
+          v.humiditySum / v.count,
+        count: v.count
+      })
+    );
 }
 
+
 /* =========================================================
-   AI Prompt
+   時間區段分析
 ========================================================= */
 
-function buildAnalysisPrompt(records) {
+function getPeriodName(hour) {
 
-  const stats =
-    analyzeHistoryStats(records);
-
-  if (!stats) {
-    return "";
+  if (hour >= 0 && hour < 6) {
+    return "深夜 00:00–05:59";
   }
 
-  /*
-    目前固定抓最多 24 筆。
-    24 筆約等於一天的資料。
-  */
+  if (hour >= 6 && hour < 12) {
+    return "上午 06:00–11:59";
+  }
+
+  if (hour >= 12 && hour < 18) {
+    return "下午 12:00–17:59";
+  }
+
+  return "晚間 18:00–23:59";
+}
+
+
+function calculateTimePeriodStats() {
+
+  const groups = {};
+
+  const periodOrder = [
+    "深夜 00:00–05:59",
+    "上午 06:00–11:59",
+    "下午 12:00–17:59",
+    "晚間 18:00–23:59"
+  ];
+
+  for (const name of periodOrder) {
+
+    groups[name] = {
+      count: 0,
+      tempSum: 0,
+      humiditySum: 0,
+      maxTemp: -Infinity,
+      minTemp: Infinity,
+      maxHumidity: -Infinity,
+      minHumidity: Infinity
+    };
+  }
+
+  for (const r of historyRecords) {
+
+    const period =
+      getPeriodName(
+        r.date.getHours()
+      );
+
+    const g =
+      groups[period];
+
+    const temp =
+      (
+        r.maxTemp +
+        r.minTemp
+      ) / 2;
+
+    const humidity =
+      (
+        r.maxHumidity +
+        r.minHumidity
+      ) / 2;
+
+    g.count++;
+
+    g.tempSum += temp;
+    g.humiditySum += humidity;
+
+    g.maxTemp =
+      Math.max(
+        g.maxTemp,
+        r.maxTemp
+      );
+
+    g.minTemp =
+      Math.min(
+        g.minTemp,
+        r.minTemp
+      );
+
+    g.maxHumidity =
+      Math.max(
+        g.maxHumidity,
+        r.maxHumidity
+      );
+
+    g.minHumidity =
+      Math.min(
+        g.minHumidity,
+        r.minHumidity
+      );
+  }
+
+  return periodOrder.map(
+    period => {
+
+      const g =
+        groups[period];
+
+      if (g.count === 0) {
+
+        return {
+          period,
+          count: 0
+        };
+      }
+
+      return {
+        period,
+        count: g.count,
+        avgTemp:
+          g.tempSum / g.count,
+        avgHumidity:
+          g.humiditySum / g.count,
+        maxTemp: g.maxTemp,
+        minTemp: g.minTemp,
+        maxHumidity: g.maxHumidity,
+        minHumidity: g.minHumidity
+      };
+    }
+  );
+}
+
+
+function renderTimePeriodStats(periodStats) {
+
+  let html = `
+    <h3>時間區段分析</h3>
+    <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>時段</th>
+          <th>筆數</th>
+          <th>平均溫度</th>
+          <th>平均濕度</th>
+          <th>最高溫</th>
+          <th>最低溫</th>
+          <th>最高濕度</th>
+          <th>最低濕度</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  for (const p of periodStats) {
+
+    if (!p.count) {
+
+      html += `
+        <tr>
+          <td>${p.period}</td>
+          <td colspan="7">目前沒有資料</td>
+        </tr>
+      `;
+
+      continue;
+    }
+
+    html += `
+      <tr>
+        <td>${p.period}</td>
+        <td>${p.count}</td>
+        <td>${p.avgTemp.toFixed(1)} °C</td>
+        <td>${p.avgHumidity.toFixed(1)} %</td>
+        <td>${p.maxTemp.toFixed(1)} °C</td>
+        <td>${p.minTemp.toFixed(1)} °C</td>
+        <td>${p.maxHumidity} %</td>
+        <td>${p.minHumidity} %</td>
+      </tr>
+    `;
+  }
+
+  html += `
+      </tbody>
+    </table>
+    </div>
+  `;
+
+  timePeriodStats.innerHTML =
+    html;
+}
+
+
+/* =========================================================
+   建立 AI Prompt
+========================================================= */
+
+function buildAnalysisPrompt() {
+
+  const stats =
+    calculateStats();
+
+  if (!stats) {
+    throw new Error(
+      "沒有歷史資料可以分析。"
+    );
+  }
 
   const dailyText =
     stats.dailyAverage
-      .slice(-7)
       .map(
         d =>
           `${d.date}：平均溫度 ${d.temperature.toFixed(1)}°C，平均濕度 ${d.humidity.toFixed(1)}%`
       )
       .join("\n");
 
-  /*
-    24 筆資料本身已經很少，
-    因此全部保留給 AI。
-  */
 
-  const sampleRecords =
-    records.slice(0, 24);
-
-  const sampleText =
-    sampleRecords
+  const periodText =
+    stats.periodStats
+      .filter(p => p.count > 0)
       .map(
-        r =>
-          `${formatDateTimeForCsv(r.timestamp)} ` +
-          `T=${r.minTemperature.toFixed(1)}~${r.maxTemperature.toFixed(1)}°C ` +
-          `RH=${r.minHumidity}~${r.maxHumidity}%`
+        p =>
+          `${p.period}：資料 ${p.count} 筆，平均溫度 ${p.avgTemp.toFixed(1)}°C，平均濕度 ${p.avgHumidity.toFixed(1)}%，最高溫 ${p.maxTemp.toFixed(1)}°C，最低溫 ${p.minTemp.toFixed(1)}°C，最高濕度 ${p.maxHumidity}%，最低濕度 ${p.minHumidity}%`
       )
       .join("\n");
 
+
+  /*
+    24 筆原始資料全部提供。
+    每筆保持精簡，避免 Prompt 過大。
+  */
+
+  const rawText =
+    historyRecords
+      .map(
+        r =>
+          `${formatDate(r.date)}｜最高 ${r.maxTemp.toFixed(1)}°C/${r.maxHumidity}%｜最低 ${r.minTemp.toFixed(1)}°C/${r.minHumidity}%`
+      )
+      .join("\n");
+
+
   return `
-請分析 LYWSD02MMC 環境感測資料。
+請分析以下 LYWSD02MMC 感測資料。
 
 【資料範圍】
-筆數：${stats.count}
-開始：${formatDate(stats.start.timestamp)}
-結束：${formatDate(stats.end.timestamp)}
+資料筆數：${historyRecords.length}
+開始時間：${formatDate(historyRecords[0].date)}
+結束時間：${formatDate(
+    historyRecords[historyRecords.length - 1].date
+  )}
 
-【溫度統計】
-最低：${stats.temperature.min.toFixed(1)}°C
-最高：${stats.temperature.max.toFixed(1)}°C
-平均：${stats.temperature.average.toFixed(1)}°C
+【整體統計】
+平均溫度：${stats.avgTemp.toFixed(1)}°C
+平均濕度：${stats.avgHumidity.toFixed(1)}%
 
-【濕度統計】
-最低：${stats.humidity.min.toFixed(0)}%
-最高：${stats.humidity.max.toFixed(0)}%
-平均：${stats.humidity.average.toFixed(1)}%
+最高溫：
+${stats.maxTempRecord.maxTemp.toFixed(1)}°C
+發生時間：
+${formatDate(stats.maxTempRecord.date)}
 
-【相鄰紀錄變化】
-最大升溫：
-${
-  stats.maxRise.value === -Infinity
-    ? "無資料"
-    : stats.maxRise.value.toFixed(1) + "°C"
-}
+最低溫：
+${stats.minTempRecord.minTemp.toFixed(1)}°C
+發生時間：
+${formatDate(stats.minTempRecord.date)}
 
-最大降溫：
-${
-  stats.maxFall.value === Infinity
-    ? "無資料"
-    : stats.maxFall.value.toFixed(1) + "°C"
-}
+最高濕度：
+${stats.maxHumidityRecord.maxHumidity}%
+發生時間：
+${formatDate(stats.maxHumidityRecord.date)}
 
-最大濕度變化：
-${
-  stats.maxRhChange.value === -Infinity
-    ? "無資料"
-    : stats.maxRhChange.value.toFixed(0) + "%"
-}
+最低濕度：
+${stats.minHumidityRecord.minHumidity}%
+發生時間：
+${formatDate(stats.minHumidityRecord.date)}
+
+【時間區段統計】
+${periodText}
 
 【每日平均】
-${dailyText || "無資料"}
+${dailyText || "目前沒有足夠資料形成每日平均"}
 
-【24 筆歷史紀錄】
-${sampleText || "無資料"}
+【原始歷史資料】
+${rawText}
 
-請用繁體中文簡短回答：
+請用繁體中文回答，並依照以下格式：
 
-1. 溫度趨勢
-2. 濕度趨勢
-3. 日夜或時間變化
-4. 溫濕度是否有明顯同步或反向變化
-5. 異常候選
-6. 簡短總結
+【溫度較高的時間】
+指出平均溫度最高的時間區段，引用實際數值。
+如果不同時段資料筆數差異很大，請提醒這一點。
 
-規則：
-- 只能根據提供的數據。
-- 不要捏造數字。
-- 不要診斷設備故障。
-- 單次波動不要直接稱為故障。
-- 不需要重新計算統計值。
-- 如果資料不足，直接說資料不足。
+【濕度較高的時間】
+指出平均濕度最高的時間區段，引用實際數值。
+
+【最高與最低】
+列出最高溫、最低溫、最高濕度、最低濕度以及發生時間。
+
+【趨勢】
+簡單說明目前資料顯示的溫度與濕度變化。
+
+【異常候選】
+只有資料明顯偏離其他資料時才提出，並稱為「異常候選」，不要診斷故障。
+
+【資料範圍】
+最後說明目前分析的是 ${historyRecords.length} 筆資料，以及實際涵蓋的開始與結束時間。
+
+不要自行增加資料。
+不要使用簡體中文。
+不要聲稱目前資料代表長期趨勢。
 `;
 }
 
+
 /* =========================================================
-   Clean AI Output
+   WebLLM 載入
+========================================================= */
+
+async function loadModel() {
+
+  if (!checkWebGPU()) {
+    return;
+  }
+
+  if (state.loading) {
+    return;
+  }
+
+  state.loading = true;
+
+  loadModelBtn.disabled = true;
+
+  setStatus(
+    aiStatus,
+    "正在載入 AI 模型..."
+  );
+
+  try {
+
+    state.engine =
+      await CreateMLCEngine(
+        MODEL_ID,
+        {
+          initProgressCallback: p => {
+
+            const percent =
+              typeof p.progress === "number"
+                ? p.progress * 100
+                : 0;
+
+            setProgress(
+              percent,
+              p.text || "載入中..."
+            );
+          }
+        }
+      );
+
+    setProgress(
+      100,
+      "AI 模型載入完成"
+    );
+
+    setStatus(
+      aiStatus,
+      "AI 模型已載入，可以開始分析。",
+      "ok"
+    );
+
+    analyzeBtn.disabled =
+      historyRecords.length === 0;
+
+    debug(
+      "WebLLM 模型載入完成：" +
+      MODEL_ID
+    );
+
+  } catch (e) {
+
+    console.error(e);
+
+    setStatus(
+      aiStatus,
+      "AI 模型載入失敗：" +
+      e.message,
+      "error"
+    );
+
+    debug(
+      "WebLLM 載入失敗：" +
+      e.message
+    );
+
+    loadModelBtn.disabled =
+      false;
+
+  } finally {
+
+    state.loading = false;
+  }
+}
+
+
+/* =========================================================
+   清理 AI 輸出
 ========================================================= */
 
 function cleanAIOutput(text) {
@@ -2188,106 +2341,36 @@ function cleanAIOutput(text) {
   return result.trim();
 }
 
-/* =========================================================
-   Load WebLLM
-========================================================= */
-
-async function loadModel() {
-
-  if (
-    state.loading ||
-    !checkWebGPU()
-  ) {
-    return;
-  }
-
-  state.loading = true;
-
-  loadModelBtn.disabled = true;
-
-  setAIStatus(
-    "正在載入 Qwen3-0.6B...",
-    "info"
-  );
-
-  setProgress(
-    0,
-    "開始載入"
-  );
-
-  try {
-
-    state.engine =
-      await CreateMLCEngine(
-        MODEL_ID,
-        {
-          initProgressCallback: p => {
-
-            const percent =
-              typeof p.progress === "number"
-                ? p.progress * 100
-                : 0;
-
-            setProgress(
-              percent,
-              p.text || "載入中..."
-            );
-          }
-        }
-      );
-
-    setProgress(
-      100,
-      "模型載入完成"
-    );
-
-    setAIStatus(
-      "AI 模型已載入",
-      "ok"
-    );
-
-    analyzeBtn.disabled =
-      historyRecords.length === 0;
-
-    debug(
-      "WebLLM 模型載入完成：" +
-      MODEL_ID
-    );
-
-  } catch (error) {
-
-    console.error(error);
-
-    setAIStatus(
-      "AI 模型載入失敗：" +
-      error.message,
-      "error"
-    );
-
-    debug(
-      "WebLLM 載入失敗：" +
-      error.message
-    );
-
-    loadModelBtn.disabled = false;
-
-  } finally {
-
-    state.loading = false;
-  }
-}
 
 /* =========================================================
-   AI Analysis
+   AI 分析
 ========================================================= */
 
 async function analyzeWithAI() {
 
-  if (
-    !state.engine ||
-    state.analyzing ||
-    !historyRecords.length
-  ) {
+  if (!state.engine) {
+
+    setStatus(
+      aiStatus,
+      "請先載入 AI 模型。",
+      "warn"
+    );
+
+    return;
+  }
+
+  if (!historyRecords.length) {
+
+    setStatus(
+      aiStatus,
+      "請先讀取歷史資料。",
+      "warn"
+    );
+
+    return;
+  }
+
+  if (state.analyzing) {
     return;
   }
 
@@ -2295,26 +2378,23 @@ async function analyzeWithAI() {
 
   analyzeBtn.disabled = true;
 
-  aiOutput.textContent =
-    "AI 正在分析...";
-
-  setAIStatus(
-    `正在分析 ${historyRecords.length} 筆資料...`,
-    "info"
+  setStatus(
+    aiStatus,
+    "AI 正在分析溫度、濕度與時間區段..."
   );
+
+  aiOutput.textContent =
+    "分析中...";
 
   try {
 
     const prompt =
-      buildAnalysisPrompt(
-        historyRecords
-      );
+      buildAnalysisPrompt();
 
     debug(
-      `AI Prompt 資料筆數：${historyRecords.length}`
+      "AI Prompt 字元數：" +
+      prompt.length
     );
-
-    let output = "";
 
     const stream =
       await state.engine.chat.completions.create({
@@ -2332,6 +2412,8 @@ async function analyzeWithAI() {
         temperature: 0.2,
         max_tokens: 512
       });
+
+    let output = "";
 
     for await (
       const chunk of stream
@@ -2351,34 +2433,41 @@ async function analyzeWithAI() {
         cleanAIOutput(output);
     }
 
-    const finalOutput =
+    const cleaned =
       cleanAIOutput(output);
 
     aiOutput.textContent =
-      finalOutput ||
-      "AI 沒有產生分析結果。";
+      cleaned ||
+      "AI 沒有產生可顯示的結果。";
 
-    setAIStatus(
-      "AI 分析完成",
+    setStatus(
+      aiStatus,
+      "AI 分析完成。",
       "ok"
     );
 
-  } catch (error) {
+    debug(
+      "AI 分析完成。"
+    );
 
-    console.error(error);
+  } catch (e) {
 
-    aiOutput.textContent =
-      "AI 分析失敗：\n" +
-      error.message;
+    console.error(e);
 
-    setAIStatus(
-      "AI 分析失敗",
+    setStatus(
+      aiStatus,
+      "AI 分析失敗：" +
+      e.message,
       "error"
     );
 
+    aiOutput.textContent =
+      "AI 分析失敗：\n" +
+      e.message;
+
     debug(
       "AI 分析失敗：" +
-      error.message
+      e.message
     );
 
   } finally {
@@ -2386,25 +2475,145 @@ async function analyzeWithAI() {
     state.analyzing = false;
 
     analyzeBtn.disabled =
-      !(
-        state.engine &&
-        historyRecords.length
-      );
+      !state.engine ||
+      historyRecords.length === 0;
   }
 }
 
+
 /* =========================================================
-   Events
+   CSV
+========================================================= */
+
+function exportCSV() {
+
+  if (!historyRecords.length) {
+    return;
+  }
+
+  const rows = [];
+
+  rows.push([
+    "index",
+    "time",
+    "max_temperature_C",
+    "max_humidity_percent",
+    "min_temperature_C",
+    "min_humidity_percent"
+  ]);
+
+  for (const r of historyRecords) {
+
+    rows.push([
+      r.index,
+      formatDate(r.date),
+      r.maxTemp.toFixed(1),
+      r.maxHumidity,
+      r.minTemp.toFixed(1),
+      r.minHumidity
+    ]);
+  }
+
+  const csv =
+    rows
+      .map(row =>
+        row
+          .map(value =>
+            `"${String(value).replace(
+              /"/g,
+              '""'
+            )}"`
+          )
+          .join(",")
+      )
+      .join("\n");
+
+  const blob =
+    new Blob(
+      [
+        "\uFEFF" + csv
+      ],
+      {
+        type:
+          "text/csv;charset=utf-8"
+      }
+    );
+
+  const url =
+    URL.createObjectURL(blob);
+
+  const a =
+    document.createElement("a");
+
+  a.href = url;
+
+  a.download =
+    "LYWSD02MMC_history.csv";
+
+  a.click();
+
+  URL.revokeObjectURL(url);
+
+  debug(
+    "CSV 匯出完成。"
+  );
+}
+
+
+/* =========================================================
+   GATT 掃描
+========================================================= */
+
+async function scanGatt() {
+
+  if (!service) {
+    return;
+  }
+
+  try {
+
+    const characteristics =
+      await service.getCharacteristics();
+
+    debug(
+      `服務內找到 ${characteristics.length} 個 Characteristics`
+    );
+
+    for (
+      const characteristic
+      of characteristics
+    ) {
+
+      debug(
+        `${characteristic.uuid} ` +
+        `properties=${JSON.stringify(
+          characteristic.properties
+        )}`
+      );
+    }
+
+  } catch (e) {
+
+    debug(
+      "GATT 掃描失敗：" +
+      e.message
+    );
+  }
+}
+
+
+/* =========================================================
+   事件
 ========================================================= */
 
 connectBtn.addEventListener(
   "click",
-  connect
+  connectDevice
 );
 
 disconnectBtn.addEventListener(
   "click",
-  disconnect
+  disconnectDevice
 );
 
 readTimeBtn.addEventListener(
@@ -2417,24 +2626,19 @@ syncTimeBtn.addEventListener(
   syncTime
 );
 
-readHistoryStatusBtn.addEventListener(
+historyStatusBtn.addEventListener(
   "click",
   readHistoryStatus
 );
 
-readHistoryBtn.addEventListener(
+historyBtn.addEventListener(
   "click",
   readHistory
 );
 
-exportCsvBtn.addEventListener(
+csvBtn.addEventListener(
   "click",
-  exportCsv
-);
-
-clearHistoryBtn.addEventListener(
-  "click",
-  clearHistory
+  exportCSV
 );
 
 loadModelBtn.addEventListener(
@@ -2447,26 +2651,36 @@ analyzeBtn.addEventListener(
   analyzeWithAI
 );
 
+
 /* =========================================================
-   Init
+   初始化
 ========================================================= */
+
+if (!window.isSecureContext) {
+
+  setStatus(
+    connectionStatus,
+    "Web Bluetooth 通常需要 HTTPS 或 localhost。",
+    "warn"
+  );
+
+  debug(
+    "目前不是 Secure Context。"
+  );
+}
 
 checkWebGPU();
 
 debug(
-  "LYWSD02MMC BLE Monitor 啟動"
+  "LYWSD02MMC Web Bluetooth 工具啟動。"
 );
 
 debug(
-  "歷史資料上限：24 筆"
+  "歷史溫度解析：/10；即時 CCC1 溫度解析：/100。"
 );
 
 debug(
-  "歷史溫度解析：/10"
-);
-
-debug(
-  "即時 CCC1 溫度解析：/100"
+  "AI 分析：Qwen3-0.6B-q4f16_1-MLC。"
 );
 
 </script>
