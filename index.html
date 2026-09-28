@@ -6,541 +6,383 @@
 <title>LYWSD02MMC BLE Monitor</title>
 
 <style>
-  * {
-    box-sizing: border-box;
-  }
+* {
+  box-sizing: border-box;
+}
 
-  body {
-    margin: 0;
-    padding: 20px;
-    background: #f3f4f6;
-    color: #222;
-    font-family:
-      -apple-system,
-      BlinkMacSystemFont,
-      "Segoe UI",
-      "Noto Sans TC",
-      Arial,
-      sans-serif;
-  }
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, "Noto Sans TC", sans-serif;
+  background: #f4f6f8;
+  color: #222;
+}
 
-  h1 {
-    margin: 0 0 6px;
-    font-size: 24px;
-  }
+h1 {
+  margin-top: 0;
+}
 
-  h2 {
-    margin: 0 0 12px;
-    font-size: 18px;
-  }
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
 
-  .subtitle {
-    color: #666;
-    margin-bottom: 18px;
-  }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 14px;
-  }
+.metric {
+  background: #f7f8fa;
+  border-radius: 10px;
+  padding: 14px;
+}
 
-  .card {
-    background: white;
-    border-radius: 14px;
-    padding: 16px;
-    box-shadow: 0 2px 10px rgba(0,0,0,.07);
-  }
+.metric .label {
+  font-size: 13px;
+  color: #666;
+}
 
-  .wide {
-    grid-column: 1 / -1;
-  }
+.metric .value {
+  font-size: 25px;
+  font-weight: bold;
+  margin-top: 5px;
+}
 
-  .row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-  }
+button {
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin: 4px;
+  cursor: pointer;
+  background: #1976d2;
+  color: white;
+  font-size: 14px;
+}
 
-  button {
-    border: 0;
-    border-radius: 9px;
-    padding: 9px 14px;
-    cursor: pointer;
-    background: #222;
-    color: white;
-    font-size: 14px;
-  }
+button:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
 
-  button:disabled {
-    opacity: .45;
-    cursor: not-allowed;
-  }
+input {
+  padding: 9px;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  width: 100px;
+}
 
-  button.secondary {
-    background: #e5e7eb;
-    color: #222;
-  }
+.status {
+  padding: 10px;
+  border-radius: 8px;
+  background: #eee;
+  margin-top: 10px;
+}
 
-  button.danger {
-    background: #b91c1c;
-  }
+.status.ok {
+  background: #dff5df;
+  color: #176117;
+}
 
-  input,
-  select {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 8px 10px;
-    font-size: 14px;
-  }
+.status.error {
+  background: #ffe0e0;
+  color: #a00000;
+}
 
-  .status {
-    padding: 9px 12px;
-    border-radius: 8px;
-    background: #f3f4f6;
-    margin-top: 10px;
-    white-space: pre-wrap;
-  }
+.status.info {
+  background: #e3f0ff;
+  color: #155a9c;
+}
 
-  .status.ok {
-    background: #dcfce7;
-    color: #166534;
-  }
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #111;
+  color: #ddd;
+  padding: 12px;
+  border-radius: 8px;
+  max-height: 350px;
+  overflow: auto;
+}
 
-  .status.error {
-    background: #fee2e2;
-    color: #991b1b;
-  }
+.timeBox {
+  font-size: 20px;
+  font-weight: bold;
+}
 
-  .status.warn {
-    background: #fef3c7;
-    color: #92400e;
-  }
+.historyControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
 
-  .metrics {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 10px;
-  }
+.historyStatus {
+  margin-top: 10px;
+}
 
-  .metric {
-    background: #f8fafc;
-    border-radius: 10px;
-    padding: 12px;
-  }
+.historyProgress {
+  width: 100%;
+  height: 12px;
+  background: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 8px;
+}
 
-  .metric .label {
-    color: #666;
-    font-size: 13px;
-  }
+.historyProgressBar {
+  width: 0%;
+  height: 100%;
+  background: #1976d2;
+  transition: width .2s;
+}
 
-  .metric .value {
-    margin-top: 4px;
-    font-size: 24px;
-    font-weight: 700;
-  }
+.tableWrap {
+  overflow-x: auto;
+  max-height: 500px;
+  overflow-y: auto;
+  margin-top: 12px;
+}
 
-  pre {
-    margin: 0;
-    background: #111827;
-    color: #d1d5db;
-    border-radius: 10px;
-    padding: 12px;
-    overflow: auto;
-    max-height: 320px;
-    white-space: pre-wrap;
-    word-break: break-word;
-    font-size: 12px;
-  }
+table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 700px;
+}
 
-  .mono {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  }
+th,
+td {
+  border-bottom: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
 
-  .progressWrap {
-    margin-top: 10px;
-  }
+th {
+  position: sticky;
+  top: 0;
+  background: #f1f3f5;
+  z-index: 1;
+}
 
-  .progressHeader {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    font-size: 13px;
-    margin-bottom: 5px;
-  }
+.aiProgress {
+  width: 100%;
+  height: 14px;
+  background: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 8px 0;
+}
 
-  .progressTrack {
-    width: 100%;
-    height: 12px;
-    border-radius: 999px;
-    background: #e5e7eb;
-    overflow: hidden;
-  }
+.aiProgressBar {
+  width: 0%;
+  height: 100%;
+  background: #4caf50;
+  transition: width .2s;
+}
 
-  .progressBar {
-    width: 0%;
-    height: 100%;
-    background: #2563eb;
-    transition: width .2s ease;
-  }
+.small {
+  color: #666;
+  font-size: 13px;
+}
 
-  .progressBar.green {
-    background: #16a34a;
-  }
-
-  .historyControls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .historyStatus {
-    margin-top: 10px;
-    color: #555;
-    font-size: 13px;
-    white-space: pre-wrap;
-  }
-
-  .tableWrap {
-    overflow: auto;
-    max-height: 500px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    margin-top: 12px;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 720px;
-  }
-
-  th,
-  td {
-    border-bottom: 1px solid #eee;
-    padding: 8px 10px;
-    text-align: right;
-    font-size: 13px;
-  }
-
-  th {
-    position: sticky;
-    top: 0;
-    background: #f8fafc;
-    z-index: 1;
-  }
-
-  th:first-child,
-  td:first-child {
-    text-align: center;
-  }
-
-  .small {
-    font-size: 12px;
-    color: #666;
-  }
-
-  .aiOutput {
-    min-height: 160px;
-    background: #f8fafc;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 12px;
-    white-space: pre-wrap;
-    line-height: 1.65;
-  }
-
-  .tag {
-    display: inline-block;
-    padding: 3px 7px;
-    border-radius: 999px;
-    background: #e5e7eb;
-    font-size: 12px;
-  }
-
-  @media (max-width: 600px) {
-    body {
-      padding: 10px;
-    }
-
-    .card {
-      padding: 12px;
-    }
-  }
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #eee;
+  margin: 2px;
+}
 </style>
 </head>
 
 <body>
 
 <h1>LYWSD02MMC BLE Monitor</h1>
-<div class="subtitle">
-  Xiaomi / Mijia LYWSD02MMC 溫濕度計 Web Bluetooth 工具
+
+<div class="card">
+  <h2>1. 藍牙連線</h2>
+  <button id="connectBtn">連線</button>
+  <button id="disconnectBtn" disabled>斷線</button>
+  <div id="connectionStatus" class="status">尚未連線</div>
 </div>
 
-<div class="grid">
+<div class="card">
+  <h2>2. 即時資料</h2>
 
-  <!-- Bluetooth -->
-  <section class="card wide">
-    <h2>藍牙連線</h2>
-
-    <div class="row">
-      <button id="connectBtn">連線</button>
-      <button id="disconnectBtn" class="danger" disabled>斷線</button>
-      <button id="readLiveBtn" class="secondary" disabled>讀取即時資料</button>
+  <div class="grid">
+    <div class="metric">
+      <div class="label">溫度</div>
+      <div class="value" id="liveTemp">-- °C</div>
     </div>
 
-    <div id="bleStatus" class="status">
-      尚未連線
-    </div>
-  </section>
-
-  <!-- Live -->
-  <section class="card">
-    <h2>即時感測</h2>
-
-    <div class="metrics">
-      <div class="metric">
-        <div class="label">溫度</div>
-        <div class="value" id="liveTemp">--</div>
-      </div>
-
-      <div class="metric">
-        <div class="label">濕度</div>
-        <div class="value" id="liveHumidity">--</div>
-      </div>
-
-      <div class="metric">
-        <div class="label">電壓</div>
-        <div class="value" id="liveVoltage">--</div>
-      </div>
-
-      <div class="metric">
-        <div class="label">電量</div>
-        <div class="value" id="liveBattery">--</div>
-      </div>
+    <div class="metric">
+      <div class="label">濕度</div>
+      <div class="value" id="liveHumidity">-- %</div>
     </div>
 
-    <div class="small" style="margin-top:10px">
-      CCC1：溫度 /100；CCC4：裝置回報電量
-    </div>
-  </section>
-
-  <!-- Time -->
-  <section class="card">
-    <h2>裝置時間</h2>
-
-    <div id="deviceTime" class="status">
-      尚未讀取
+    <div class="metric">
+      <div class="label">電壓</div>
+      <div class="value" id="liveVoltage">-- mV</div>
     </div>
 
-    <div class="row" style="margin-top:10px">
-      <button id="syncTimeBtn" disabled>同步電腦時間</button>
-      <button id="readTimeBtn" class="secondary" disabled>讀取時間</button>
+    <div class="metric">
+      <div class="label">電池</div>
+      <div class="value" id="liveBattery">-- %</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>3. 時間同步</h2>
+
+  <div class="timeBox" id="deviceTime">裝置時間：--</div>
+  <div class="small" id="timeInfo">尚未讀取</div>
+
+  <button id="readTimeBtn" disabled>讀取裝置時間</button>
+  <button id="syncTimeBtn" disabled>同步目前時間</button>
+</div>
+
+<div class="card">
+  <h2>4. 歷史資料狀態</h2>
+
+  <div class="grid">
+    <div class="metric">
+      <div class="label">歷史總索引</div>
+      <div class="value" id="historyTotal">--</div>
     </div>
 
-    <div class="small" style="margin-top:10px">
-      CCB7：4-byte Unix timestamp LE + 1-byte timezone offset
-    </div>
-  </section>
-
-  <!-- History status -->
-  <section class="card">
-    <h2>歷史資料狀態</h2>
-
-    <div class="metrics">
-      <div class="metric">
-        <div class="label">總索引</div>
-        <div class="value" id="historyTotal">--</div>
-      </div>
-
-      <div class="metric">
-        <div class="label">已儲存</div>
-        <div class="value" id="historyStored">--</div>
-      </div>
-
-      <div class="metric">
-        <div class="label">最舊索引</div>
-        <div class="value" id="historyOldest">--</div>
-      </div>
-
-      <div class="metric">
-        <div class="label">最新索引</div>
-        <div class="value" id="historyNewest">--</div>
-      </div>
+    <div class="metric">
+      <div class="label">目前保存筆數</div>
+      <div class="value" id="historyStored">--</div>
     </div>
 
-    <div class="row" style="margin-top:10px">
-      <button id="readHistoryStatusBtn" disabled>
-        讀取歷史狀態
-      </button>
-    </div>
-  </section>
-
-  <!-- History -->
-  <section class="card wide">
-    <h2>歷史資料</h2>
-
-    <div class="historyControls">
-      <label>
-        筆數：
-        <input
-          id="historyCountInput"
-          type="number"
-          min="1"
-          max="96"
-          value="96"
-        >
-      </label>
-
-      <button id="readHistoryBtn" disabled>
-        讀取最新歷史
-      </button>
-
-      <button id="clearHistoryBtn" class="secondary">
-        清除表格
-      </button>
-
-      <button id="exportCsvBtn" class="secondary" disabled>
-        匯出 CSV
-      </button>
+    <div class="metric">
+      <div class="label">最舊索引</div>
+      <div class="value" id="historyOldest">--</div>
     </div>
 
-    <div class="progressWrap">
-      <div class="progressHeader">
-        <span>歷史資料讀取</span>
-        <span id="historyProgressText">0 / 0</span>
-      </div>
-
-      <div class="progressTrack">
-        <div id="historyProgressBar" class="progressBar green"></div>
-      </div>
+    <div class="metric">
+      <div class="label">最新索引</div>
+      <div class="value" id="historyNewest">--</div>
     </div>
+  </div>
 
-    <div id="historyStatus" class="historyStatus">
-      尚未讀取歷史資料
-    </div>
+  <button id="readHistoryStatusBtn" disabled>讀取歷史狀態</button>
+</div>
 
-    <div class="tableWrap">
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Index</th>
-            <th>時間</th>
-            <th>最低溫</th>
-            <th>最低濕度</th>
-            <th>最高溫</th>
-            <th>最高濕度</th>
-          </tr>
-        </thead>
-        <tbody id="historyTableBody">
-        </tbody>
-      </table>
-    </div>
-  </section>
+<div class="card">
+  <h2>5. 歷史資料</h2>
 
-  <!-- AI -->
-  <section class="card wide">
-    <h2>WebLLM 趨勢分析</h2>
+  <div class="historyControls">
+    <label>
+      抓取筆數：
+      <input
+        id="historyCount"
+        type="number"
+        value="24"
+        min="1"
+        max="24"
+      >
+    </label>
 
-    <div class="small">
-      使用瀏覽器 WebGPU 執行
-      <span class="tag">Qwen3-0.6B-q4f16_1-MLC</span>
-    </div>
+    <button id="readHistoryBtn" disabled>讀取歷史資料</button>
+    <button id="exportCsvBtn" disabled>匯出 CSV</button>
+    <button id="clearHistoryBtn">清除資料</button>
+  </div>
 
-    <div class="progressWrap">
-      <div class="progressHeader">
-        <span>AI 模型下載／載入</span>
-        <span id="modelProgressText">0%</span>
-      </div>
+  <div class="historyStatus" id="historyStatus">
+    尚未讀取歷史資料
+  </div>
 
-      <div class="progressTrack">
-        <div id="modelProgressBar" class="progressBar"></div>
-      </div>
+  <div class="historyProgress">
+    <div id="historyProgressBar" class="historyProgressBar"></div>
+  </div>
 
-      <div id="modelProgressDetail" class="small" style="margin-top:5px">
-        尚未載入模型
-      </div>
-    </div>
+  <div class="tableWrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Index</th>
+          <th>時間</th>
+          <th>最低溫</th>
+          <th>最低濕度</th>
+          <th>最高溫</th>
+          <th>最高濕度</th>
+        </tr>
+      </thead>
+      <tbody id="historyTableBody"></tbody>
+    </table>
+  </div>
+</div>
 
-    <div class="row" style="margin-top:12px">
-      <button id="loadModelBtn">
-        載入 AI 模型
-      </button>
+<div class="card">
+  <h2>6. 裝置</h2>
+  <div id="deviceInfo">尚未連線</div>
+</div>
 
-      <button id="analyzeBtn" disabled>
-        分析歷史趨勢
-      </button>
-    </div>
+<div class="card">
+  <h2>7. CCC1 即時資料</h2>
+  <pre id="ccc1Output">尚未收到資料</pre>
+</div>
 
-    <div id="aiStatus" class="status" style="margin-top:10px">
-      尚未載入 AI 模型
-    </div>
+<div class="card">
+  <h2>8. CCC4 電池</h2>
+  <pre id="ccc4Output">尚未讀取</pre>
+</div>
 
-    <div id="aiOutput" class="aiOutput" style="margin-top:12px">
-      尚未分析
-    </div>
-  </section>
+<div class="card">
+  <h2>9. 時間 Characteristic</h2>
+  <pre id="timeOutput">尚未讀取</pre>
+</div>
 
-  <!-- Device -->
-  <section class="card">
-    <h2>裝置</h2>
+<div class="card">
+  <h2>10. GATT</h2>
+  <pre id="gattOutput">尚未掃描</pre>
+</div>
 
-    <div id="deviceInfo" class="status">
-      尚未連線
-    </div>
-  </section>
+<div class="card">
+  <h2>11. Log</h2>
+  <pre id="logOutput"></pre>
+</div>
 
-  <!-- CCC1 -->
-  <section class="card">
-    <h2>CCC1 即時資料</h2>
+<div class="card">
+  <h2>12. WebLLM AI 分析</h2>
 
-    <pre id="ccc1Output">尚未收到資料</pre>
-  </section>
+  <p class="small">
+    使用 Qwen3-0.6B-q4f16_1-MLC。
+    AI 不直接負責數值計算，統計由 JavaScript 完成。
+  </p>
 
-  <!-- CCC4 -->
-  <section class="card">
-    <h2>CCC4 電量</h2>
+  <button id="loadModelBtn">載入 AI 模型</button>
+  <button id="analyzeBtn" disabled>分析目前 24 筆歷史資料</button>
 
-    <pre id="ccc4Output">尚未收到資料</pre>
-  </section>
+  <div id="aiStatus" class="status">
+    尚未載入模型
+  </div>
 
-  <!-- Time characteristics -->
-  <section class="card">
-    <h2>時間特徵</h2>
+  <div class="aiProgress">
+    <div id="aiProgressBar" class="aiProgressBar"></div>
+  </div>
 
-    <pre id="timeOutput">尚未讀取</pre>
-  </section>
+  <div id="aiProgressText" class="small">
+    0%
+  </div>
 
-  <!-- GATT -->
-  <section class="card">
-    <h2>GATT</h2>
-
-    <pre id="gattOutput">尚未連線</pre>
-  </section>
-
-  <!-- Log -->
-  <section class="card wide">
-    <h2>Log</h2>
-
-    <div class="row" style="margin-bottom:8px">
-      <button id="clearLogBtn" class="secondary">
-        清除 Log
-      </button>
-    </div>
-
-    <pre id="logOutput"></pre>
-  </section>
-
+  <pre id="aiOutput">尚未分析</pre>
 </div>
 
 <script type="module">
 
+import { CreateMLCEngine } from "https://esm.run/@mlc-ai/web-llm";
+
 /* =========================================================
    UUID
-   ========================================================= */
+========================================================= */
 
 const SERVICE_UUID =
   "ebe0ccb0-7a0a-4b0c-8a1a-6ff2997da3a6";
@@ -572,26 +414,11 @@ const HISTORY_LAST_UUID =
 const HISTORY_NOTIFY_UUID =
   "ebe0ccbc-7a0a-4b0c-8a1a-6ff2997da3a6";
 
-
 /* =========================================================
    WebLLM
-   ========================================================= */
+========================================================= */
 
-import {
-  CreateMLCEngine
-} from "https://esm.run/@mlc-ai/web-llm";
-
-const MODEL_ID =
-  "Qwen3-0.6B-q4f16_1-MLC";
-
-const state = {
-  engine: null,
-  loading: false,
-  analyzing: false,
-  currentSuggestion: "",
-  currentTarget: null,
-  currentMode: null
-};
+const MODEL_ID = "Qwen3-0.6B-q4f16_1-MLC";
 
 const SYSTEM_PROMPT = `
 你是「LYWSD02MMC 環境感測趨勢分析助手」。
@@ -600,7 +427,7 @@ const SYSTEM_PROMPT = `
 
 規則：
 1. 不得捏造資料。
-2. 不得修改或重新計算使用者提供的統計數值；若需要計算，優先使用提供的統計結果。
+2. 不得修改或重新計算使用者提供的統計數值。
 3. 不得把單次波動直接稱為故障。
 4. 不得診斷設備故障或健康狀態。
 5. 使用繁體中文。
@@ -610,129 +437,15 @@ const SYSTEM_PROMPT = `
 9. 輸出簡潔、條列、容易閱讀。
 `;
 
+const state = {
+  engine: null,
+  loading: false,
+  analyzing: false
+};
 
 /* =========================================================
-   DOM
-   ========================================================= */
-
-const connectBtn =
-  document.getElementById("connectBtn");
-
-const disconnectBtn =
-  document.getElementById("disconnectBtn");
-
-const readLiveBtn =
-  document.getElementById("readLiveBtn");
-
-const syncTimeBtn =
-  document.getElementById("syncTimeBtn");
-
-const readTimeBtn =
-  document.getElementById("readTimeBtn");
-
-const readHistoryStatusBtn =
-  document.getElementById("readHistoryStatusBtn");
-
-const readHistoryBtn =
-  document.getElementById("readHistoryBtn");
-
-const clearHistoryBtn =
-  document.getElementById("clearHistoryBtn");
-
-const exportCsvBtn =
-  document.getElementById("exportCsvBtn");
-
-const historyCountInput =
-  document.getElementById("historyCountInput");
-
-const loadModelBtn =
-  document.getElementById("loadModelBtn");
-
-const analyzeBtn =
-  document.getElementById("analyzeBtn");
-
-const clearLogBtn =
-  document.getElementById("clearLogBtn");
-
-const bleStatus =
-  document.getElementById("bleStatus");
-
-const deviceInfo =
-  document.getElementById("deviceInfo");
-
-const liveTemp =
-  document.getElementById("liveTemp");
-
-const liveHumidity =
-  document.getElementById("liveHumidity");
-
-const liveVoltage =
-  document.getElementById("liveVoltage");
-
-const liveBattery =
-  document.getElementById("liveBattery");
-
-const deviceTime =
-  document.getElementById("deviceTime");
-
-const historyTotal =
-  document.getElementById("historyTotal");
-
-const historyStored =
-  document.getElementById("historyStored");
-
-const historyOldest =
-  document.getElementById("historyOldest");
-
-const historyNewest =
-  document.getElementById("historyNewest");
-
-const historyTableBody =
-  document.getElementById("historyTableBody");
-
-const historyStatus =
-  document.getElementById("historyStatus");
-
-const historyProgressText =
-  document.getElementById("historyProgressText");
-
-const historyProgressBar =
-  document.getElementById("historyProgressBar");
-
-const modelProgressText =
-  document.getElementById("modelProgressText");
-
-const modelProgressBar =
-  document.getElementById("modelProgressBar");
-
-const modelProgressDetail =
-  document.getElementById("modelProgressDetail");
-
-const aiStatus =
-  document.getElementById("aiStatus");
-
-const aiOutput =
-  document.getElementById("aiOutput");
-
-const ccc1Output =
-  document.getElementById("ccc1Output");
-
-const ccc4Output =
-  document.getElementById("ccc4Output");
-
-const timeOutput =
-  document.getElementById("timeOutput");
-
-const gattOutput =
-  document.getElementById("gattOutput");
-
-const logOutput =
-  document.getElementById("logOutput");
-
-
-/* =========================================================
-   BLE state
-   ========================================================= */
+   BLE State
+========================================================= */
 
 let device = null;
 let server = null;
@@ -742,9 +455,6 @@ let dataCharacteristic = null;
 let batteryCharacteristic = null;
 let timeCharacteristic = null;
 
-let cca4Characteristic = null;
-let ccd7Characteristic = null;
-
 let historyCountCharacteristic = null;
 let historyIndexCharacteristic = null;
 let historyLastCharacteristic = null;
@@ -752,24 +462,110 @@ let historyNotifyCharacteristic = null;
 
 let historyRecords = [];
 
-let historyTotalCount = 0;
-let historyStoredCount = 0;
-let historyOldestIndex = 0;
-let historyNewestIndex = 0;
+let historyWaiters = new Map();
 
-let currentExpected = 0;
-let currentReceived = 0;
-let currentStart = 0;
-let currentEnd = 0;
+let currentHistoryStart = null;
+let currentHistoryEnd = null;
 
-let historyWaiters = [];
+/* =========================================================
+   DOM
+========================================================= */
 
+const $ = id => document.getElementById(id);
+
+const connectBtn = $("connectBtn");
+const disconnectBtn = $("disconnectBtn");
+
+const connectionStatus = $("connectionStatus");
+
+const liveTemp = $("liveTemp");
+const liveHumidity = $("liveHumidity");
+const liveVoltage = $("liveVoltage");
+const liveBattery = $("liveBattery");
+
+const deviceTime = $("deviceTime");
+const timeInfo = $("timeInfo");
+
+const readTimeBtn = $("readTimeBtn");
+const syncTimeBtn = $("syncTimeBtn");
+
+const readHistoryStatusBtn =
+  $("readHistoryStatusBtn");
+
+const readHistoryBtn =
+  $("readHistoryBtn");
+
+const exportCsvBtn =
+  $("exportCsvBtn");
+
+const clearHistoryBtn =
+  $("clearHistoryBtn");
+
+const historyCountInput =
+  $("historyCount");
+
+const historyStatus =
+  $("historyStatus");
+
+const historyProgressBar =
+  $("historyProgressBar");
+
+const historyTableBody =
+  $("historyTableBody");
+
+const historyTotal =
+  $("historyTotal");
+
+const historyStored =
+  $("historyStored");
+
+const historyOldest =
+  $("historyOldest");
+
+const historyNewest =
+  $("historyNewest");
+
+const deviceInfo =
+  $("deviceInfo");
+
+const ccc1Output =
+  $("ccc1Output");
+
+const ccc4Output =
+  $("ccc4Output");
+
+const timeOutput =
+  $("timeOutput");
+
+const gattOutput =
+  $("gattOutput");
+
+const logOutput =
+  $("logOutput");
+
+const loadModelBtn =
+  $("loadModelBtn");
+
+const analyzeBtn =
+  $("analyzeBtn");
+
+const aiStatus =
+  $("aiStatus");
+
+const aiProgressBar =
+  $("aiProgressBar");
+
+const aiProgressText =
+  $("aiProgressText");
+
+const aiOutput =
+  $("aiOutput");
 
 /* =========================================================
    Utility
-   ========================================================= */
+========================================================= */
 
-function log(message) {
+function debug(message) {
   const time =
     new Date().toLocaleTimeString();
 
@@ -778,95 +574,66 @@ function log(message) {
 
   logOutput.scrollTop =
     logOutput.scrollHeight;
+
+  console.log(message);
 }
 
-function debug(message) {
-  log(message);
+function setStatus(message, type = "info") {
+  connectionStatus.textContent =
+    message;
+
+  connectionStatus.className =
+    "status " + type;
 }
 
-function setBleStatus(message, type = "") {
-  bleStatus.textContent = message;
-  bleStatus.className =
-    "status" + (type ? " " + type : "");
-}
+function setAIStatus(message, type = "info") {
+  aiStatus.textContent =
+    message;
 
-function setAiStatus(message, type = "") {
-  aiStatus.textContent = message;
   aiStatus.className =
-    "status" + (type ? " " + type : "");
+    "status " + type;
 }
 
-function formatHex(data) {
-  const bytes =
-    data instanceof DataView
-      ? new Uint8Array(
-          data.buffer,
-          data.byteOffset,
-          data.byteLength
-        )
-      : new Uint8Array(data);
+function setProgress(percent, text = "") {
+  const value =
+    Math.max(0, Math.min(100, percent));
 
-  return Array.from(bytes)
-    .map(b => b.toString(16).padStart(2, "0"))
-    .join(" ");
+  aiProgressBar.style.width =
+    value + "%";
+
+  aiProgressText.textContent =
+    `${value.toFixed(1)}% ${text}`;
 }
 
-function dataViewToHex(data) {
-  return formatHex(data);
-}
+function setHistoryProgress(percent) {
+  const value =
+    Math.max(0, Math.min(100, percent));
 
-function uint32LE(data, offset = 0) {
-  return data.getUint32(offset, true);
+  historyProgressBar.style.width =
+    value + "%";
 }
 
 function formatDate(timestamp) {
-  return new Date(timestamp * 1000)
+  return new Date(timestamp)
     .toLocaleString("zh-TW", {
       hour12: false
     });
 }
 
 function formatDateTimeForCsv(timestamp) {
-  const d =
-    new Date(timestamp * 1000);
-
-  const pad =
-    n => String(n).padStart(2, "0");
-
-  return (
-    `${d.getFullYear()}-` +
-    `${pad(d.getMonth() + 1)}-` +
-    `${pad(d.getDate())} ` +
-    `${pad(d.getHours())}:` +
-    `${pad(d.getMinutes())}:` +
-    `${pad(d.getSeconds())}`
-  );
+  return new Date(timestamp)
+    .toLocaleString("zh-TW", {
+      hour12: false
+    });
 }
-
-function escapeCsv(value) {
-  const text = String(value ?? "");
-
-  if (
-    text.includes(",") ||
-    text.includes('"') ||
-    text.includes("\n")
-  ) {
-    return '"' +
-      text.replaceAll('"', '""') +
-      '"';
-  }
-
-  return text;
-}
-
 
 /* =========================================================
-   WebGPU / WebLLM
-   ========================================================= */
+   WebGPU
+========================================================= */
 
 function checkWebGPU() {
   if (!navigator.gpu) {
-    setAiStatus(
+    setAIStatus(
       "此瀏覽器沒有可用的 WebGPU",
       "error"
     );
@@ -876,6 +643,7 @@ function checkWebGPU() {
     );
 
     loadModelBtn.disabled = true;
+
     return false;
   }
 
@@ -887,156 +655,28 @@ function checkWebGPU() {
   return true;
 }
 
-function setModelProgress(percent, text) {
-  const safePercent =
-    Math.max(
-      0,
-      Math.min(
-        100,
-        Number.isFinite(percent)
-          ? percent
-          : 0
-      )
-    );
-
-  modelProgressBar.style.width =
-    safePercent.toFixed(1) + "%";
-
-  modelProgressText.textContent =
-    safePercent.toFixed(1) + "%";
-
-  modelProgressDetail.textContent =
-    text || "載入中...";
-}
-
-async function loadModel() {
-  if (
-    state.loading ||
-    state.engine
-  ) {
-    return;
-  }
-
-  if (!checkWebGPU()) {
-    return;
-  }
-
-  state.loading = true;
-  loadModelBtn.disabled = true;
-  analyzeBtn.disabled = true;
-
-  setAiStatus(
-    "正在下載／初始化 WebLLM 模型...",
-    "warn"
-  );
-
-  setModelProgress(0, "開始載入模型...");
-
-  try {
-    debug(
-      "開始載入 WebLLM：" +
-      MODEL_ID
-    );
-
-    state.engine =
-      await CreateMLCEngine(
-        MODEL_ID,
-        {
-          initProgressCallback: p => {
-            const percent =
-              typeof p?.progress === "number"
-                ? p.progress * 100
-                : 0;
-
-            const text =
-              p?.text ||
-              "載入中...";
-
-            setModelProgress(
-              percent,
-              text
-            );
-
-            debug(
-              `WebLLM ${percent.toFixed(1)}% ${text}`
-            );
-          }
-        }
-      );
-
-    setModelProgress(
-      100,
-      "模型已完成載入"
-    );
-
-    setAiStatus(
-      "AI 模型已載入，可以分析歷史資料。",
-      "ok"
-    );
-
-    loadModelBtn.textContent =
-      "模型已載入";
-
-    analyzeBtn.disabled =
-      historyRecords.length === 0;
-
-    debug(
-      "WebLLM 模型載入完成。"
-    );
-
-  } catch (error) {
-
-    state.engine = null;
-
-    setModelProgress(
-      0,
-      "模型載入失敗"
-    );
-
-    setAiStatus(
-      "模型載入失敗：" +
-      (error?.message || error),
-      "error"
-    );
-
-    loadModelBtn.disabled = false;
-
-    debug(
-      "WebLLM 載入失敗：\n" +
-      (error?.stack || error)
-    );
-
-  } finally {
-    state.loading = false;
-  }
-}
-
-
 /* =========================================================
-   BLE connection
-   ========================================================= */
+   BLE Connect
+========================================================= */
 
 async function connect() {
 
-  if (!navigator.bluetooth) {
-    setBleStatus(
-      "此瀏覽器不支援 Web Bluetooth",
-      "error"
-    );
-    return;
-  }
-
   try {
 
-    setBleStatus(
-      "正在搜尋藍牙裝置...",
-      "warn"
+    if (!navigator.bluetooth) {
+      throw new Error(
+        "此瀏覽器不支援 Web Bluetooth"
+      );
+    }
+
+    setStatus(
+      "正在搜尋裝置...",
+      "info"
     );
 
     device =
       await navigator.bluetooth.requestDevice({
         acceptAllDevices: true,
-
         optionalServices: [
           "generic_access",
           "generic_attribute",
@@ -1045,9 +685,9 @@ async function connect() {
         ]
       });
 
-    log(
+    debug(
       "選擇裝置：" +
-      (device.name || "(無名稱)")
+      (device.name || "Unknown")
     );
 
     device.addEventListener(
@@ -1058,17 +698,10 @@ async function connect() {
     server =
       await device.gatt.connect();
 
-    log("GATT 已連線");
-
     service =
       await server.getPrimaryService(
         SERVICE_UUID
       );
-
-    log(
-      "取得主服務：" +
-      SERVICE_UUID
-    );
 
     dataCharacteristic =
       await service.getCharacteristic(
@@ -1082,22 +715,13 @@ async function connect() {
       handleLiveData
     );
 
-    log(
-      "CCC1 即時通知已啟用"
-    );
-
     try {
       batteryCharacteristic =
         await service.getCharacteristic(
           BATTERY_UUID
         );
-
-      log("取得 CCC4");
     } catch (e) {
-      log(
-        "取得 CCC4 失敗：" +
-        e.message
-      );
+      batteryCharacteristic = null;
     }
 
     try {
@@ -1105,41 +729,8 @@ async function connect() {
         await service.getCharacteristic(
           TIME_UUID
         );
-
-      log("取得 CCB7");
     } catch (e) {
-      log(
-        "取得 CCB7 失敗：" +
-        e.message
-      );
-    }
-
-    try {
-      cca4Characteristic =
-        await service.getCharacteristic(
-          CCA4_UUID
-        );
-
-      log("取得 CCA4");
-    } catch (e) {
-      log(
-        "取得 CCA4 失敗：" +
-        e.message
-      );
-    }
-
-    try {
-      ccd7Characteristic =
-        await service.getCharacteristic(
-          CCD7_UUID
-        );
-
-      log("取得 CCD7");
-    } catch (e) {
-      log(
-        "取得 CCD7 失敗：" +
-        e.message
-      );
+      timeCharacteristic = null;
     }
 
     try {
@@ -1147,13 +738,8 @@ async function connect() {
         await service.getCharacteristic(
           HISTORY_COUNT_UUID
         );
-
-      log("取得 CCB9");
     } catch (e) {
-      log(
-        "取得 CCB9 失敗：" +
-        e.message
-      );
+      historyCountCharacteristic = null;
     }
 
     try {
@@ -1161,13 +747,8 @@ async function connect() {
         await service.getCharacteristic(
           HISTORY_INDEX_UUID
         );
-
-      log("取得 CCBA");
     } catch (e) {
-      log(
-        "取得 CCBA 失敗：" +
-        e.message
-      );
+      historyIndexCharacteristic = null;
     }
 
     try {
@@ -1175,13 +756,8 @@ async function connect() {
         await service.getCharacteristic(
           HISTORY_LAST_UUID
         );
-
-      log("取得 CCBB");
     } catch (e) {
-      log(
-        "取得 CCBB 失敗：" +
-        e.message
-      );
+      historyLastCharacteristic = null;
     }
 
     try {
@@ -1189,134 +765,108 @@ async function connect() {
         await service.getCharacteristic(
           HISTORY_NOTIFY_UUID
         );
-
-      log("取得 CCBC");
-
-      await startHistoryNotifications();
-
     } catch (e) {
-      log(
-        "取得／啟用 CCBC 失敗：" +
-        e.message
-      );
+      historyNotifyCharacteristic = null;
     }
 
-    updateConnectionUI();
+    deviceInfo.textContent =
+      `名稱：${device.name || "Unknown"}\n` +
+      `ID：${device.id || "Unknown"}`;
 
-    setBleStatus(
-      `已連線：${device.name || "(無名稱)"}`,
+    setStatus(
+      "已連線：" +
+      (device.name || "Unknown"),
       "ok"
     );
 
-    deviceInfo.textContent =
-      `名稱：${device.name || "(無名稱)"}\n` +
-      `ID：${device.id || "(無 ID)"}`;
+    connectBtn.disabled = true;
+    disconnectBtn.disabled = false;
 
-    await readLiveData();
-    await readHistoryStatus();
-    await readTime();
+    readTimeBtn.disabled =
+      !timeCharacteristic;
 
-    await enumerateGatt();
+    syncTimeBtn.disabled =
+      !timeCharacteristic;
+
+    readHistoryStatusBtn.disabled =
+      !historyCountCharacteristic;
+
+    readHistoryBtn.disabled =
+      !(
+        historyCountCharacteristic &&
+        historyIndexCharacteristic &&
+        historyNotifyCharacteristic
+      );
+
+    await scanGatt();
+
+    if (batteryCharacteristic) {
+      await readBattery();
+    }
+
+    debug("BLE 連線完成");
 
   } catch (error) {
 
     console.error(error);
 
-    setBleStatus(
-      "連線失敗：" +
-      (error?.message || error),
+    setStatus(
+      "連線失敗：" + error.message,
       "error"
     );
 
-    log(
-      "連線失敗：\n" +
-      (error?.stack || error)
+    debug(
+      "連線錯誤：" +
+      error.message
     );
-
   }
 }
 
-function updateConnectionUI() {
+/* =========================================================
+   Disconnect
+========================================================= */
 
-  const connected =
-    !!device &&
-    !!server &&
-    server.connected;
+function disconnect() {
 
-  connectBtn.disabled =
-    connected;
+  try {
 
-  disconnectBtn.disabled =
-    !connected;
+    if (device?.gatt?.connected) {
+      device.gatt.disconnect();
+    }
 
-  readLiveBtn.disabled =
-    !connected ||
-    !dataCharacteristic;
-
-  syncTimeBtn.disabled =
-    !connected ||
-    !timeCharacteristic;
-
-  readTimeBtn.disabled =
-    !connected ||
-    !timeCharacteristic;
-
-  readHistoryStatusBtn.disabled =
-    !connected ||
-    !historyCountCharacteristic;
-
-  readHistoryBtn.disabled =
-    !connected ||
-    !historyIndexCharacteristic ||
-    !historyNotifyCharacteristic;
-
-  analyzeBtn.disabled =
-    !state.engine ||
-    state.analyzing ||
-    historyRecords.length === 0;
+  } catch (e) {
+    debug(
+      "斷線錯誤：" +
+      e.message
+    );
+  }
 }
 
 function onDisconnected() {
 
-  log("GATT 已斷線");
-
-  setBleStatus(
-    "藍牙已斷線",
-    "warn"
+  setStatus(
+    "裝置已斷線",
+    "error"
   );
 
-  server = null;
+  connectBtn.disabled = false;
+  disconnectBtn.disabled = true;
 
-  updateConnectionUI();
+  readTimeBtn.disabled = true;
+  syncTimeBtn.disabled = true;
+  readHistoryStatusBtn.disabled = true;
+  readHistoryBtn.disabled = true;
+
+  dataCharacteristic = null;
+  batteryCharacteristic = null;
+  timeCharacteristic = null;
+
+  debug("GATT disconnected");
 }
-
-async function disconnect() {
-
-  try {
-    if (
-      device?.gatt?.connected
-    ) {
-      device.gatt.disconnect();
-    }
-  } catch (error) {
-    log(
-      "斷線錯誤：" +
-      error.message
-    );
-  }
-
-  server = null;
-  updateConnectionUI();
-
-  setBleStatus(
-    "已斷線"
-  );
-}
-
 
 /* =========================================================
-   Live CCC1
-   ========================================================= */
+   Live Data CCC1
+========================================================= */
 
 function handleLiveData(event) {
 
@@ -1347,48 +897,29 @@ function handleLiveData(event) {
 
   ccc1Output.textContent =
     `HEX：${dataViewToHex(value)}\n` +
-    `Temperature：${temperature.toFixed(2)} °C\n` +
-    `Humidity：${humidity} %\n` +
-    `Voltage：${voltage} mV`;
-
-  log(
-    `CCC1：${temperature.toFixed(2)}°C / ` +
-    `${humidity}% / ${voltage}mV`
-  );
+    `溫度：${temperature.toFixed(2)} °C\n` +
+    `濕度：${humidity} %\n` +
+    `電壓：${voltage} mV`;
 }
 
-async function readLiveData() {
+function dataViewToHex(view) {
 
-  if (!dataCharacteristic) {
-    return;
-  }
+  const bytes = [];
 
-  try {
-
-    const value =
-      await dataCharacteristic.readValue();
-
-    handleLiveData({
-      target: {
-        value
-      }
-    });
-
-  } catch (error) {
-
-    log(
-      "讀取 CCC1 失敗：" +
-      error.message
+  for (let i = 0; i < view.byteLength; i++) {
+    bytes.push(
+      view.getUint8(i)
+        .toString(16)
+        .padStart(2, "0")
     );
   }
 
-  await readBattery();
+  return bytes.join(" ");
 }
 
-
 /* =========================================================
-   Battery CCC4
-   ========================================================= */
+   Battery
+========================================================= */
 
 async function readBattery() {
 
@@ -1409,25 +940,20 @@ async function readBattery() {
 
     ccc4Output.textContent =
       `HEX：${dataViewToHex(value)}\n` +
-      `Battery：${battery}%`;
+      `電池：${battery}%`;
 
-    log(
-      `CCC4：${battery}%`
-    );
+  } catch (e) {
 
-  } catch (error) {
-
-    log(
+    debug(
       "讀取 CCC4 失敗：" +
-      error.message
+      e.message
     );
   }
 }
 
-
 /* =========================================================
    Time
-   ========================================================= */
+========================================================= */
 
 async function readTime() {
 
@@ -1440,58 +966,46 @@ async function readTime() {
     const value =
       await timeCharacteristic.readValue();
 
-    const hex =
-      dataViewToHex(value);
-
-    timeOutput.textContent =
-      `HEX：${hex}`;
-
-    if (value.byteLength >= 5) {
-
-      const timestamp =
-        value.getUint32(0, true);
-
-      const timezone =
-        value.getInt8(4);
-
-      const localTimestamp =
-        timestamp +
-        timezone * 3600;
-
-      const date =
-        new Date(
-          localTimestamp * 1000
-        );
-
-      deviceTime.textContent =
-        `裝置時間：${
-          date.toLocaleString(
-            "zh-TW",
-            { hour12: false }
-          )
-        }\n` +
-        `Unix timestamp：${timestamp}\n` +
-        `Timezone offset：UTC${
-          timezone >= 0 ? "+" : ""
-        }${timezone}`;
-
-      timeOutput.textContent =
-        `HEX：${hex}\n` +
-        `Unix：${timestamp}\n` +
-        `Timezone：UTC${timezone >= 0 ? "+" : ""}${timezone}\n` +
-        `時間：${
-          date.toLocaleString(
-            "zh-TW",
-            { hour12: false }
-          )
-        }`;
+    if (value.byteLength < 5) {
+      throw new Error(
+        "時間資料長度不足"
+      );
     }
 
-  } catch (error) {
+    const timestamp =
+      value.getUint32(0, true);
 
-    log(
-      "讀取 CCB7 失敗：" +
-      error.message
+    const timezone =
+      value.getInt8(4);
+
+    const date =
+      new Date(
+        (timestamp + timezone * 3600) * 1000
+      );
+
+    deviceTime.textContent =
+      "裝置時間：" +
+      date.toLocaleString(
+        "zh-TW",
+        { hour12: false }
+      );
+
+    timeInfo.textContent =
+      `Unix：${timestamp} / 時區：UTC${timezone >= 0 ? "+" : ""}${timezone}`;
+
+    timeOutput.textContent =
+      `HEX：${dataViewToHex(value)}\n` +
+      `Unix：${timestamp}\n` +
+      `Timezone：UTC${timezone >= 0 ? "+" : ""}${timezone}\n` +
+      `時間：${date.toLocaleString("zh-TW", {
+        hour12: false
+      })}`;
+
+  } catch (e) {
+
+    debug(
+      "讀取時間失敗：" +
+      e.message
     );
   }
 }
@@ -1505,9 +1019,7 @@ async function syncTime() {
   try {
 
     const now =
-      Math.floor(
-        Date.now() / 1000
-      );
+      Math.floor(Date.now() / 1000);
 
     const timezone =
       -new Date().getTimezoneOffset() / 60;
@@ -1529,18 +1041,12 @@ async function syncTime() {
       timezone
     );
 
-    log(
-      "同步時間寫入：" +
-      dataViewToHex(view)
-    );
-
-    await timeCharacteristic.writeValueWithResponse(
+    await timeCharacteristic.writeValue(
       buffer
     );
 
-    setBleStatus(
-      "時間同步完成",
-      "ok"
+    debug(
+      `已同步時間：${now} / timezone=${timezone}`
     );
 
     await new Promise(
@@ -1550,25 +1056,58 @@ async function syncTime() {
 
     await readTime();
 
-  } catch (error) {
+  } catch (e) {
 
-    log(
-      "時間同步失敗：" +
-      (error?.stack || error)
-    );
-
-    setBleStatus(
-      "時間同步失敗：" +
-      error.message,
-      "error"
+    debug(
+      "同步時間失敗：" +
+      e.message
     );
   }
 }
 
+/* =========================================================
+   GATT Scan
+========================================================= */
+
+async function scanGatt() {
+
+  if (!service) {
+    return;
+  }
+
+  try {
+
+    const characteristics =
+      await service.getCharacteristics();
+
+    let output = "";
+
+    for (const characteristic of characteristics) {
+
+      output +=
+        `${characteristic.uuid}\n`;
+
+      output +=
+        `  properties: ` +
+        `${JSON.stringify(
+          characteristic.properties
+        )}\n\n`;
+    }
+
+    gattOutput.textContent =
+      output;
+
+  } catch (e) {
+
+    gattOutput.textContent =
+      "GATT 掃描失敗：" +
+      e.message;
+  }
+}
 
 /* =========================================================
-   History status CCB9
-   ========================================================= */
+   History Status
+========================================================= */
 
 async function readHistoryStatus() {
 
@@ -1583,7 +1122,7 @@ async function readHistoryStatus() {
 
     if (value.byteLength < 8) {
       throw new Error(
-        "CCB9 資料長度不足"
+        "歷史狀態資料長度不足"
       );
     }
 
@@ -1593,66 +1132,108 @@ async function readHistoryStatus() {
     const stored =
       value.getUint32(4, true);
 
-    historyTotalCount =
-      total;
-
-    historyStoredCount =
-      stored;
-
-    historyOldestIndex =
+    const oldest =
       stored > 0
         ? total - stored + 1
         : 0;
 
-    historyNewestIndex =
+    const newest =
       total;
 
     historyTotal.textContent =
-      total.toLocaleString();
+      total;
 
     historyStored.textContent =
-      stored.toLocaleString();
+      stored;
 
     historyOldest.textContent =
-      historyOldestIndex.toLocaleString();
+      oldest;
 
     historyNewest.textContent =
-      historyNewestIndex.toLocaleString();
+      newest;
 
-    historyStatus.textContent =
-      `HEX：${dataViewToHex(value)}\n` +
-      `總記錄：${total}\n` +
-      `已儲存：${stored}\n` +
-      `最舊索引：${historyOldestIndex}\n` +
-      `最新索引：${historyNewestIndex}`;
-
-    log(
-      `CCB9：total=${total}, stored=${stored}, ` +
-      `oldest=${historyOldestIndex}, newest=${historyNewestIndex}`
+    debug(
+      `歷史狀態：total=${total}, stored=${stored}, oldest=${oldest}, newest=${newest}`
     );
 
-  } catch (error) {
+    historyStatus.textContent =
+      `共有 ${stored} 筆可讀歷史資料，索引 ${oldest} ～ ${newest}`;
 
-    log(
-      "讀取 CCB9 失敗：" +
-      error.message
+  } catch (e) {
+
+    debug(
+      "讀取歷史狀態失敗：" +
+      e.message
     );
   }
 }
 
+/* =========================================================
+   History Notification
+========================================================= */
+
+async function startHistoryNotifications() {
+
+  if (!historyNotifyCharacteristic) {
+    throw new Error(
+      "找不到 CCBC"
+    );
+  }
+
+  await historyNotifyCharacteristic.startNotifications();
+
+  historyNotifyCharacteristic.removeEventListener(
+    "characteristicvaluechanged",
+    handleHistoryNotification
+  );
+
+  historyNotifyCharacteristic.addEventListener(
+    "characteristicvaluechanged",
+    handleHistoryNotification
+  );
+}
+
+function handleHistoryNotification(event) {
+
+  const value =
+    event.target.value;
+
+  try {
+
+    const record =
+      parseHistoryRecord(value);
+
+    if (!record) {
+      return;
+    }
+
+    addHistoryRecord(record);
+
+    const waiter =
+      historyWaiters.get(record.index);
+
+    if (waiter) {
+      historyWaiters.delete(
+        record.index
+      );
+
+      waiter(record);
+    }
+
+  } catch (e) {
+
+    debug(
+      "解析歷史通知失敗：" +
+      e.message
+    );
+  }
+}
 
 /* =========================================================
-   History packet
-   14 bytes:
-   0-3   index uint32 LE
-   4-7   Unix timestamp uint32 LE
-   8-9   MAX temperature int16 LE / 10
-   10    MAX humidity
-   11-12 MIN temperature int16 LE / 10
-   13    MIN humidity
-   ========================================================= */
+   History Parser
+========================================================= */
 
-function parseHistory(value) {
+function parseHistoryRecord(value) {
 
   if (value.byteLength < 14) {
     return null;
@@ -1678,7 +1259,7 @@ function parseHistory(value) {
 
   return {
     index,
-    timestamp,
+    timestamp: timestamp * 1000,
     minTemperature,
     minHumidity,
     maxTemperature,
@@ -1686,151 +1267,87 @@ function parseHistory(value) {
   };
 }
 
-
 /* =========================================================
-   History notification
-   ========================================================= */
-
-function handleHistoryNotification(event) {
-
-  const value =
-    event.target.value;
-
-  const record =
-    parseHistory(value);
-
-  if (!record) {
-    log(
-      "CCBC 收到無效封包：" +
-      dataViewToHex(value)
-    );
-    return;
-  }
-
-  log(
-    `CCBC index=${record.index} ` +
-    `${record.minTemperature.toFixed(1)}~` +
-    `${record.maxTemperature.toFixed(1)}°C`
-  );
-
-  addHistoryRecord(record);
-
-  for (
-    const waiter of [...historyWaiters]
-  ) {
-    if (
-      waiter.index === record.index
-    ) {
-      waiter.resolve(record);
-
-      historyWaiters =
-        historyWaiters.filter(
-          w => w !== waiter
-        );
-    }
-  }
-}
-
-async function startHistoryNotifications() {
-
-  if (!historyNotifyCharacteristic) {
-    return;
-  }
-
-  try {
-
-    await historyNotifyCharacteristic.startNotifications();
-
-    historyNotifyCharacteristic.addEventListener(
-      "characteristicvaluechanged",
-      handleHistoryNotification
-    );
-
-    log(
-      "CCBC 歷史通知已啟用"
-    );
-
-  } catch (error) {
-
-    log(
-      "CCBC notification 啟用失敗：" +
-      error.message
-    );
-  }
-}
+   Add History
+========================================================= */
 
 function addHistoryRecord(record) {
 
-  const existing =
-    historyRecords.find(
+  if (
+    currentHistoryStart !== null &&
+    currentHistoryEnd !== null
+  ) {
+
+    if (
+      record.index < currentHistoryStart ||
+      record.index > currentHistoryEnd
+    ) {
+      return;
+    }
+  }
+
+  const exists =
+    historyRecords.some(
       r => r.index === record.index
     );
 
-  if (existing) {
-    return;
+  if (!exists) {
+    historyRecords.push(record);
   }
-
-  historyRecords.push(record);
-
-  historyRecords.sort(
-    (a, b) =>
-      a.index - b.index
-  );
-
-  currentReceived =
-    historyRecords.filter(
-      r =>
-        r.index >= currentStart &&
-        r.index <= currentEnd
-    ).length;
-
-  updateHistoryProgress(
-    currentReceived
-  );
-
-  renderHistoryTable();
-
-  exportCsvBtn.disabled =
-    historyRecords.length === 0;
-
-  analyzeBtn.disabled =
-    !state.engine ||
-    state.analyzing ||
-    historyRecords.length === 0;
 }
 
-
 /* =========================================================
-   History progress
-   ========================================================= */
+   Wait History Record
+========================================================= */
 
-function updateHistoryProgress(received) {
+function waitForHistoryRecord(
+  index,
+  timeout = 1500
+) {
 
-  const expected =
-    currentExpected || 0;
+  return new Promise(resolve => {
 
-  historyProgressText.textContent =
-    `${received} / ${expected}`;
+    let finished = false;
 
-  const percent =
-    expected > 0
-      ? received / expected * 100
-      : 0;
+    const timer =
+      setTimeout(() => {
 
-  historyProgressBar.style.width =
-    Math.min(100, percent) + "%";
+        if (finished) {
+          return;
+        }
+
+        finished = true;
+        historyWaiters.delete(index);
+        resolve(null);
+
+      }, timeout);
+
+    historyWaiters.set(
+      index,
+      record => {
+
+        if (finished) {
+          return;
+        }
+
+        finished = true;
+        clearTimeout(timer);
+
+        resolve(record);
+      }
+    );
+  });
 }
 
-
 /* =========================================================
-   Write history index
-   ========================================================= */
+   Write History Index
+========================================================= */
 
 async function writeHistoryIndex(index) {
 
   if (!historyIndexCharacteristic) {
     throw new Error(
-      "CCBA 不可用"
+      "找不到 CCBA"
     );
   }
 
@@ -1846,258 +1363,241 @@ async function writeHistoryIndex(index) {
     true
   );
 
-  log(
-    `CCBA 寫入 index=${index} ` +
-    `[${dataViewToHex(view)}]`
-  );
-
-  await historyIndexCharacteristic
-    .writeValueWithResponse(
-      buffer
-    );
-}
-
-
-/* =========================================================
-   Wait CCBC
-   ========================================================= */
-
-function waitForHistoryRecord(
-  index,
-  timeout = 2500
-) {
-
-  return new Promise(
-    (resolve, reject) => {
-
-      const waiter = {
-        index,
-        resolve,
-        reject,
-        timer: null
-      };
-
-      waiter.timer =
-        setTimeout(() => {
-
-          historyWaiters =
-            historyWaiters.filter(
-              w => w !== waiter
-            );
-
-          reject(
-            new Error(
-              `等待 index ${index} timeout`
-            )
-          );
-
-        }, timeout);
-
-      const originalResolve =
-        waiter.resolve;
-
-      waiter.resolve =
-        record => {
-          clearTimeout(
-            waiter.timer
-          );
-
-          originalResolve(record);
-        };
-
-      historyWaiters.push(
-        waiter
-      );
-    }
+  await historyIndexCharacteristic.writeValue(
+    buffer
   );
 }
 
-
 /* =========================================================
-   Read one history record fallback
-   ========================================================= */
+   Read History By Index
+========================================================= */
 
 async function readHistoryByIndex(index) {
 
-  if (
-    !historyIndexCharacteristic ||
-    !historyLastCharacteristic
-  ) {
-    return null;
+  const waiter =
+    waitForHistoryRecord(
+      index,
+      1500
+    );
+
+  await writeHistoryIndex(index);
+
+  let record =
+    await waiter;
+
+  if (record) {
+    return record;
   }
 
-  try {
-
-    const waiter =
-      waitForHistoryRecord(
-        index,
-        2200
-      );
-
-    await writeHistoryIndex(
-      index
-    );
+  if (historyLastCharacteristic) {
 
     try {
-      return await waiter;
-    } catch {
-      // fallback to CCBB
+
+      const value =
+        await historyLastCharacteristic.readValue();
+
+      const parsed =
+        parseHistoryRecord(value);
+
+      if (
+        parsed &&
+        parsed.index === index
+      ) {
+        return parsed;
+      }
+
+    } catch (e) {
+
+      debug(
+        `CCBB 讀取 ${index} 失敗：${e.message}`
+      );
     }
-
-    const value =
-      await historyLastCharacteristic.readValue();
-
-    const record =
-      parseHistory(value);
-
-    if (
-      record &&
-      record.index === index
-    ) {
-      return record;
-    }
-
-  } catch (error) {
-
-    log(
-      `讀取 index ${index} 失敗：` +
-      error.message
-    );
   }
 
   return null;
 }
 
-
 /* =========================================================
-   Read latest history
-   ========================================================= */
+   Read History
+========================================================= */
 
-async function readRecentHistory() {
+async function readHistory() {
 
   if (
+    !historyCountCharacteristic ||
     !historyIndexCharacteristic ||
     !historyNotifyCharacteristic
   ) {
     return;
   }
 
-  const count =
-    Math.max(
-      1,
-      Math.min(
-        96,
-        Number(
-          historyCountInput.value
-        ) || 96
-      )
-    );
-
-  if (
-    !historyStoredCount ||
-    !historyNewestIndex
-  ) {
-    await readHistoryStatus();
-  }
-
-  if (!historyNewestIndex) {
-    historyStatus.textContent =
-      "無法取得最新歷史索引";
-    return;
-  }
-
-  const start =
-    Math.max(
-      historyOldestIndex,
-      historyNewestIndex - count + 1
-    );
-
-  const end =
-    historyNewestIndex;
-
-  currentStart = start;
-  currentEnd = end;
-
-  currentExpected =
-    end - start + 1;
-
-  currentReceived = 0;
-
-  historyRecords = [];
-
-  historyTableBody.innerHTML = "";
-
-  updateHistoryProgress(0);
-
-  historyStatus.textContent =
-    `正在讀取 ${start} ~ ${end}，共 ${currentExpected} 筆...`;
-
-  readHistoryBtn.disabled = true;
-
   try {
 
-    /*
-      重要：
-      CCBC 可以在一次 CCBA 寫入後連續串流多筆。
-      因此先寫一次起始 index，等待串流。
-    */
-
-    const firstWaiter =
-      waitForHistoryRecord(
-        start,
-        5000
+    let count =
+      parseInt(
+        historyCountInput.value,
+        10
       );
 
-    await writeHistoryIndex(
-      start
-    );
+    if (
+      !Number.isFinite(count) ||
+      count < 1
+    ) {
+      count = 24;
+    }
 
-    try {
-      await firstWaiter;
-    } catch {
-      log(
-        "起始索引沒有從 CCBC 即時收到，稍後使用 fallback"
+    count =
+      Math.min(24, count);
+
+    historyCountInput.value =
+      count;
+
+    await readHistoryStatus();
+
+    const total =
+      parseInt(
+        historyTotal.textContent,
+        10
+      );
+
+    const stored =
+      parseInt(
+        historyStored.textContent,
+        10
+      );
+
+    if (
+      !Number.isFinite(total) ||
+      !Number.isFinite(stored) ||
+      stored <= 0
+    ) {
+      throw new Error(
+        "沒有可讀的歷史資料"
       );
     }
 
-    await new Promise(
-      resolve =>
-        setTimeout(
-          resolve,
-          5000
-        )
-    );
+    const oldest =
+      total - stored + 1;
+
+    const newest =
+      total;
+
+    const actualCount =
+      Math.min(
+        count,
+        stored
+      );
+
+    const startIndex =
+      newest - actualCount + 1;
+
+    currentHistoryStart =
+      startIndex;
+
+    currentHistoryEnd =
+      newest;
+
+    historyRecords = [];
+
+    historyWaiters.clear();
+
+    renderHistoryTable();
+
+    setHistoryProgress(0);
+
+    historyStatus.textContent =
+      `準備讀取 ${actualCount} 筆歷史資料...`;
+
+    await startHistoryNotifications();
 
     /*
-      找出缺少的 index，
-      用 CCBA + CCBC / CCBB fallback 補資料。
+      只寫一次 CCBA。
+      CCBC 會從指定 index 開始串流後續紀錄。
     */
 
-    const existing =
+    await writeHistoryIndex(
+      startIndex
+    );
+
+    historyStatus.textContent =
+      `正在接收 ${startIndex} ～ ${newest}...`;
+
+    /*
+      等待裝置串流。
+      24 筆資料通常不需要很久。
+    */
+
+    const streamWait =
+      Math.max(
+        3000,
+        actualCount * 180
+      );
+
+    const startTime =
+      Date.now();
+
+    while (
+      Date.now() - startTime <
+      streamWait
+    ) {
+
+      const received =
+        historyRecords.filter(
+          r =>
+            r.index >= startIndex &&
+            r.index <= newest
+        ).length;
+
+      setHistoryProgress(
+        received /
+        actualCount *
+        100
+      );
+
+      historyStatus.textContent =
+        `正在接收歷史資料：${received}/${actualCount}`;
+
+      if (
+        received >= actualCount
+      ) {
+        break;
+      }
+
+      await new Promise(
+        resolve =>
+          setTimeout(
+            resolve,
+            150
+          )
+      );
+    }
+
+    /*
+      如果 CCBC 沒有完整送出，
+      對缺少的 index 逐筆 fallback。
+    */
+
+    const receivedIndexes =
       new Set(
         historyRecords.map(
           r => r.index
         )
       );
 
-    const missing = [];
-
     for (
-      let index = start;
-      index <= end;
+      let index = startIndex;
+      index <= newest;
       index++
     ) {
-      if (!existing.has(index)) {
-        missing.push(index);
+
+      if (
+        receivedIndexes.has(index)
+      ) {
+        continue;
       }
-    }
 
-    log(
-      `CCBC 串流完成，目前 ${historyRecords.length} 筆，` +
-      `缺少 ${missing.length} 筆`
-    );
-
-    for (const index of missing) {
+      historyStatus.textContent =
+        `補讀缺少資料：${index}`;
 
       const record =
         await readHistoryByIndex(
@@ -2107,14 +1607,27 @@ async function readRecentHistory() {
       if (record) {
         addHistoryRecord(record);
       }
+
+      const received =
+        historyRecords.filter(
+          r =>
+            r.index >= startIndex &&
+            r.index <= newest
+        ).length;
+
+      setHistoryProgress(
+        received /
+        actualCount *
+        100
+      );
     }
 
     historyRecords =
       historyRecords
         .filter(
           r =>
-            r.index >= start &&
-            r.index <= end
+            r.index >= startIndex &&
+            r.index <= newest
         )
         .sort(
           (a, b) =>
@@ -2123,67 +1636,45 @@ async function readRecentHistory() {
 
     renderHistoryTable();
 
+    exportCsvBtn.disabled =
+      historyRecords.length === 0;
+
+    analyzeBtn.disabled =
+      !(
+        state.engine &&
+        historyRecords.length > 0
+      );
+
     const finalCount =
       historyRecords.length;
 
-    const missingCount =
-      currentExpected -
-      finalCount;
-
-    if (missingCount === 0) {
-
-      historyStatus.textContent =
-        `完成：${finalCount} / ` +
-        `${currentExpected} 筆`;
-
-    } else {
-
-      historyStatus.textContent =
-        `完成：${finalCount} / ` +
-        `${currentExpected} 筆\n` +
-        `仍缺少：${missingCount} 筆`;
-
-    }
-
-    updateHistoryProgress(
-      finalCount
-    );
-
-    exportCsvBtn.disabled =
-      finalCount === 0;
-
-    analyzeBtn.disabled =
-      !state.engine ||
-      finalCount === 0;
-
-    log(
-      `歷史資料讀取完成：${finalCount}/${currentExpected}`
-    );
-
-  } catch (error) {
+    setHistoryProgress(100);
 
     historyStatus.textContent =
-      "歷史資料讀取失敗：" +
-      error.message;
+      `完成：成功取得 ${finalCount}/${actualCount} 筆`;
 
-    log(
-      "歷史讀取失敗：\n" +
-      (error?.stack || error)
+    debug(
+      `歷史資料完成：${finalCount}/${actualCount}`
     );
 
-  } finally {
+  } catch (e) {
 
-    readHistoryBtn.disabled =
-      false;
+    console.error(e);
 
-    updateConnectionUI();
+    historyStatus.textContent =
+      "讀取失敗：" +
+      e.message;
+
+    debug(
+      "歷史資料讀取失敗：" +
+      e.message
+    );
   }
 }
 
-
 /* =========================================================
-   Render history
-   ========================================================= */
+   Render History
+========================================================= */
 
 function renderHistoryTable() {
 
@@ -2195,75 +1686,55 @@ function renderHistoryTable() {
       const tr =
         document.createElement("tr");
 
-      const values = [
-        index + 1,
-        record.index,
-        formatDate(
-          record.timestamp
-        ),
-        record.minTemperature.toFixed(1) +
-          " °C",
-        record.minHumidity + " %",
-        record.maxTemperature.toFixed(1) +
-          " °C",
-        record.maxHumidity + " %"
-      ];
-
-      values.forEach(
-        value => {
-
-          const td =
-            document.createElement("td");
-
-          td.textContent =
-            value;
-
-          tr.appendChild(td);
-        }
-      );
+      tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${record.index}</td>
+        <td>${formatDate(record.timestamp)}</td>
+        <td>${record.minTemperature.toFixed(1)} °C</td>
+        <td>${record.minHumidity} %</td>
+        <td>${record.maxTemperature.toFixed(1)} °C</td>
+        <td>${record.maxHumidity} %</td>
+      `;
 
       historyTableBody.appendChild(tr);
     }
   );
 }
 
-
 /* =========================================================
    CSV
-   ========================================================= */
+========================================================= */
 
-function exportHistoryCsv() {
+function exportCsv() {
 
   if (!historyRecords.length) {
     return;
   }
 
-  const rows = [];
+  const rows = [
+    [
+      "Index",
+      "時間",
+      "最低溫",
+      "最低濕度",
+      "最高溫",
+      "最高濕度"
+    ]
+  ];
 
-  rows.push([
-    "index",
-    "time",
-    "min_temperature_c",
-    "min_humidity_percent",
-    "max_temperature_c",
-    "max_humidity_percent"
-  ]);
-
-  for (
-    const record of historyRecords
-  ) {
+  historyRecords.forEach(record => {
 
     rows.push([
       record.index,
       formatDateTimeForCsv(
         record.timestamp
       ),
-      record.minTemperature,
+      record.minTemperature.toFixed(1),
       record.minHumidity,
-      record.maxTemperature,
+      record.maxTemperature.toFixed(1),
       record.maxHumidity
     ]);
-  }
+  });
 
   const csv =
     "\uFEFF" +
@@ -2271,17 +1742,23 @@ function exportHistoryCsv() {
       .map(
         row =>
           row
-            .map(escapeCsv)
+            .map(
+              value =>
+                `"${String(value).replace(
+                  /"/g,
+                  '""'
+                )}"`
+            )
             .join(",")
       )
-      .join("\r\n");
+      .join("\n");
 
   const blob =
     new Blob(
       [csv],
       {
         type:
-          "text/csv;charset=utf-8"
+          "text/csv;charset=utf-8;"
       }
     );
 
@@ -2294,11 +1771,7 @@ function exportHistoryCsv() {
   a.href = url;
 
   a.download =
-    `LYWSD02MMC_history_${
-      new Date()
-        .toISOString()
-        .slice(0, 10)
-    }.csv`;
+    `LYWSD02MMC_history_${Date.now()}.csv`;
 
   document.body.appendChild(a);
 
@@ -2307,29 +1780,39 @@ function exportHistoryCsv() {
   a.remove();
 
   URL.revokeObjectURL(url);
-
-  log(
-    "CSV 已匯出"
-  );
 }
-
 
 /* =========================================================
-   History statistics
-   ========================================================= */
+   Clear History
+========================================================= */
 
-function average(array) {
+function clearHistory() {
 
-  if (!array.length) {
-    return null;
-  }
+  historyRecords = [];
 
-  return array.reduce(
-    (sum, value) =>
-      sum + value,
-    0
-  ) / array.length;
+  historyWaiters.clear();
+
+  currentHistoryStart = null;
+  currentHistoryEnd = null;
+
+  renderHistoryTable();
+
+  exportCsvBtn.disabled = true;
+
+  analyzeBtn.disabled = true;
+
+  setHistoryProgress(0);
+
+  historyStatus.textContent =
+    "歷史資料已清除";
+
+  aiOutput.textContent =
+    "尚未分析";
 }
+
+/* =========================================================
+   AI Statistics
+========================================================= */
 
 function analyzeHistoryStats(records) {
 
@@ -2337,27 +1820,52 @@ function analyzeHistoryStats(records) {
     return null;
   }
 
-  const temps =
-    records.flatMap(
-      r => [
-        r.minTemperature,
-        r.maxTemperature
-      ]
+  const temperatures = [];
+
+  const humidities = [];
+
+  for (const r of records) {
+
+    temperatures.push(
+      r.minTemperature,
+      r.maxTemperature
     );
 
-  const hums =
-    records.flatMap(
-      r => [
-        r.minHumidity,
-        r.maxHumidity
-      ]
+    humidities.push(
+      r.minHumidity,
+      r.maxHumidity
     );
+  }
 
-  const tempAvg =
-    average(temps);
+  const tempMin =
+    Math.min(...temperatures);
 
-  const rhAvg =
-    average(hums);
+  const tempMax =
+    Math.max(...temperatures);
+
+  const tempAverage =
+    temperatures.reduce(
+      (a, b) => a + b,
+      0
+    ) / temperatures.length;
+
+  const rhMin =
+    Math.min(...humidities);
+
+  const rhMax =
+    Math.max(...humidities);
+
+  const rhAverage =
+    humidities.reduce(
+      (a, b) => a + b,
+      0
+    ) / humidities.length;
+
+  const sorted =
+    [...records].sort(
+      (a, b) =>
+        a.timestamp - b.timestamp
+    );
 
   let maxRise = {
     value: -Infinity,
@@ -2379,153 +1887,158 @@ function analyzeHistoryStats(records) {
 
   for (
     let i = 1;
-    i < records.length;
+    i < sorted.length;
     i++
   ) {
 
-    const prevTemp =
+    const previous =
       (
-        records[i - 1].minTemperature +
-        records[i - 1].maxTemperature
+        sorted[i - 1].minTemperature +
+        sorted[i - 1].maxTemperature
       ) / 2;
 
-    const currTemp =
+    const current =
       (
-        records[i].minTemperature +
-        records[i].maxTemperature
+        sorted[i].minTemperature +
+        sorted[i].maxTemperature
       ) / 2;
 
-    const deltaTemp =
-      currTemp - prevTemp;
+    const temperatureChange =
+      current - previous;
 
     if (
-      deltaTemp >
+      temperatureChange >
       maxRise.value
     ) {
 
       maxRise = {
-        value: deltaTemp,
-        from: records[i - 1],
-        to: records[i]
+        value: temperatureChange,
+        from: sorted[i - 1],
+        to: sorted[i]
       };
     }
 
     if (
-      deltaTemp <
+      temperatureChange <
       maxFall.value
     ) {
 
       maxFall = {
-        value: deltaTemp,
-        from: records[i - 1],
-        to: records[i]
+        value: temperatureChange,
+        from: sorted[i - 1],
+        to: sorted[i]
       };
     }
 
-    const prevHumidity =
+    const previousRh =
       (
-        records[i - 1].minHumidity +
-        records[i - 1].maxHumidity
+        sorted[i - 1].minHumidity +
+        sorted[i - 1].maxHumidity
       ) / 2;
 
-    const currHumidity =
+    const currentRh =
       (
-        records[i].minHumidity +
-        records[i].maxHumidity
+        sorted[i].minHumidity +
+        sorted[i].maxHumidity
       ) / 2;
 
-    const deltaRh =
+    const rhChange =
       Math.abs(
-        currHumidity -
-        prevHumidity
+        currentRh - previousRh
       );
 
     if (
-      deltaRh >
+      rhChange >
       maxRhChange.value
     ) {
 
       maxRhChange = {
-        value: deltaRh,
-        from: records[i - 1],
-        to: records[i]
+        value: rhChange,
+        from: sorted[i - 1],
+        to: sorted[i]
       };
     }
   }
 
+  /*
+    每日平均
+  */
+
   const daily = {};
 
-  for (
-    const record of records
-  ) {
+  for (const r of sorted) {
 
     const date =
       new Date(
-        record.timestamp * 1000
-      );
+        r.timestamp
+      )
+        .toISOString()
+        .slice(0, 10);
 
-    const key =
-      date.toLocaleDateString(
-        "sv-SE"
-      );
+    const temperature =
+      (
+        r.minTemperature +
+        r.maxTemperature
+      ) / 2;
 
-    if (!daily[key]) {
-      daily[key] = {
-        temps: [],
-        hums: []
+    const humidity =
+      (
+        r.minHumidity +
+        r.maxHumidity
+      ) / 2;
+
+    if (!daily[date]) {
+      daily[date] = {
+        temperatureSum: 0,
+        humiditySum: 0,
+        count: 0
       };
     }
 
-    daily[key].temps.push(
-      (
-        record.minTemperature +
-        record.maxTemperature
-      ) / 2
-    );
+    daily[date].temperatureSum +=
+      temperature;
 
-    daily[key].hums.push(
-      (
-        record.minHumidity +
-        record.maxHumidity
-      ) / 2
-    );
+    daily[date].humiditySum +=
+      humidity;
+
+    daily[date].count++;
   }
 
   const dailyAverage =
     Object.entries(daily)
-      .sort(
-        ([a], [b]) =>
-          a.localeCompare(b)
-      )
       .map(
-        ([date, data]) => ({
+        ([date, value]) => ({
           date,
           temperature:
-            average(data.temps),
+            value.temperatureSum /
+            value.count,
           humidity:
-            average(data.hums)
+            value.humiditySum /
+            value.count
         })
+      )
+      .sort(
+        (a, b) =>
+          a.date.localeCompare(b.date)
       );
 
   return {
     count: records.length,
 
-    start:
-      records[0],
+    start: sorted[0],
 
-    end:
-      records[records.length - 1],
+    end: sorted[sorted.length - 1],
 
     temperature: {
-      min: Math.min(...temps),
-      max: Math.max(...temps),
-      average: tempAvg
+      min: tempMin,
+      max: tempMax,
+      average: tempAverage
     },
 
     humidity: {
-      min: Math.min(...hums),
-      max: Math.max(...hums),
-      average: rhAvg
+      min: rhMin,
+      max: rhMax,
+      average: rhAverage
     },
 
     maxRise,
@@ -2536,10 +2049,9 @@ function analyzeHistoryStats(records) {
   };
 }
 
-
 /* =========================================================
-   AI prompt
-   ========================================================= */
+   AI Prompt
+========================================================= */
 
 function buildAnalysisPrompt(records) {
 
@@ -2550,100 +2062,111 @@ function buildAnalysisPrompt(records) {
     return "";
   }
 
+  /*
+    目前固定抓最多 24 筆。
+    24 筆約等於一天的資料。
+  */
+
   const dailyText =
     stats.dailyAverage
+      .slice(-7)
       .map(
         d =>
-          `${d.date}：` +
-          `平均溫度 ${d.temperature.toFixed(2)}°C，` +
-          `平均濕度 ${d.humidity.toFixed(1)}%`
+          `${d.date}：平均溫度 ${d.temperature.toFixed(1)}°C，平均濕度 ${d.humidity.toFixed(1)}%`
       )
       .join("\n");
 
-  const rawText =
-    records
+  /*
+    24 筆資料本身已經很少，
+    因此全部保留給 AI。
+  */
+
+  const sampleRecords =
+    records.slice(0, 24);
+
+  const sampleText =
+    sampleRecords
       .map(
         r =>
-          `${r.index},` +
-          `${formatDateTimeForCsv(r.timestamp)},` +
-          `${r.minTemperature},` +
-          `${r.minHumidity},` +
-          `${r.maxTemperature},` +
-          `${r.maxHumidity}`
+          `${formatDateTimeForCsv(r.timestamp)} ` +
+          `T=${r.minTemperature.toFixed(1)}~${r.maxTemperature.toFixed(1)}°C ` +
+          `RH=${r.minHumidity}~${r.maxHumidity}%`
       )
       .join("\n");
 
   return `
-請分析以下 LYWSD02MMC 歷史感測資料。
+請分析 LYWSD02MMC 環境感測資料。
 
-【資料期間】
+【資料範圍】
+筆數：${stats.count}
 開始：${formatDate(stats.start.timestamp)}
 結束：${formatDate(stats.end.timestamp)}
-筆數：${stats.count}
 
-【基本統計】
-溫度：
-最低 ${stats.temperature.min.toFixed(1)} °C
-最高 ${stats.temperature.max.toFixed(1)} °C
-平均 ${stats.temperature.average.toFixed(2)} °C
+【溫度統計】
+最低：${stats.temperature.min.toFixed(1)}°C
+最高：${stats.temperature.max.toFixed(1)}°C
+平均：${stats.temperature.average.toFixed(1)}°C
 
-濕度：
-最低 ${stats.humidity.min.toFixed(0)} %
-最高 ${stats.humidity.max.toFixed(0)} %
-平均 ${stats.humidity.average.toFixed(2)} %
+【濕度統計】
+最低：${stats.humidity.min.toFixed(0)}%
+最高：${stats.humidity.max.toFixed(0)}%
+平均：${stats.humidity.average.toFixed(1)}%
 
 【相鄰紀錄變化】
 最大升溫：
-${stats.maxRise.value === -Infinity
-  ? "無資料"
-  : stats.maxRise.value.toFixed(2) + " °C"}
+${
+  stats.maxRise.value === -Infinity
+    ? "無資料"
+    : stats.maxRise.value.toFixed(1) + "°C"
+}
 
 最大降溫：
-${stats.maxFall.value === Infinity
-  ? "無資料"
-  : stats.maxFall.value.toFixed(2) + " °C"}
+${
+  stats.maxFall.value === Infinity
+    ? "無資料"
+    : stats.maxFall.value.toFixed(1) + "°C"
+}
 
 最大濕度變化：
-${stats.maxRhChange.value === -Infinity
-  ? "無資料"
-  : stats.maxRhChange.value.toFixed(1) + " %"}
-
-注意：
-以上是「相鄰紀錄」的變化，不要稱為固定一小時變化，
-除非資料本身能確認紀錄間隔就是一小時。
+${
+  stats.maxRhChange.value === -Infinity
+    ? "無資料"
+    : stats.maxRhChange.value.toFixed(0) + "%"
+}
 
 【每日平均】
 ${dailyText || "無資料"}
 
-【原始資料】
-index,time,minTemp,minRH,maxTemp,maxRH
-${rawText}
+【24 筆歷史紀錄】
+${sampleText || "無資料"}
 
-請依序回答：
+請用繁體中文簡短回答：
 
 1. 溫度趨勢
 2. 濕度趨勢
-3. 日夜或日期變化
-4. 溫濕度是否有明顯同步或反向變化；若資料不足請明確說明
+3. 日夜或時間變化
+4. 溫濕度是否有明顯同步或反向變化
 5. 異常候選
 6. 簡短總結
 
-請使用繁體中文。
-不要自行捏造數字。
-不要診斷設備故障或健康狀態。
+規則：
+- 只能根據提供的數據。
+- 不要捏造數字。
+- 不要診斷設備故障。
+- 單次波動不要直接稱為故障。
+- 不需要重新計算統計值。
+- 如果資料不足，直接說資料不足。
 `;
 }
 
-
 /* =========================================================
-   AI output cleanup
-   ========================================================= */
+   Clean AI Output
+========================================================= */
 
 function cleanAIOutput(text) {
 
   let result =
-    String(text || "")
-      .trim();
+    String(text || "").trim();
 
   result =
     result.replace(
@@ -2652,41 +2175,119 @@ function cleanAIOutput(text) {
     ).trim();
 
   result =
-    result.replace(
-      /^```[\w-]*\s*/i,
-      ""
-    ).replace(
-      /\s*```$/,
-      ""
-    );
+    result
+      .replace(
+        /^```[\w-]*\s*/i,
+        ""
+      )
+      .replace(
+        /\s*```$/i,
+        ""
+      );
 
   return result.trim();
 }
 
+/* =========================================================
+   Load WebLLM
+========================================================= */
+
+async function loadModel() {
+
+  if (
+    state.loading ||
+    !checkWebGPU()
+  ) {
+    return;
+  }
+
+  state.loading = true;
+
+  loadModelBtn.disabled = true;
+
+  setAIStatus(
+    "正在載入 Qwen3-0.6B...",
+    "info"
+  );
+
+  setProgress(
+    0,
+    "開始載入"
+  );
+
+  try {
+
+    state.engine =
+      await CreateMLCEngine(
+        MODEL_ID,
+        {
+          initProgressCallback: p => {
+
+            const percent =
+              typeof p.progress === "number"
+                ? p.progress * 100
+                : 0;
+
+            setProgress(
+              percent,
+              p.text || "載入中..."
+            );
+          }
+        }
+      );
+
+    setProgress(
+      100,
+      "模型載入完成"
+    );
+
+    setAIStatus(
+      "AI 模型已載入",
+      "ok"
+    );
+
+    analyzeBtn.disabled =
+      historyRecords.length === 0;
+
+    debug(
+      "WebLLM 模型載入完成：" +
+      MODEL_ID
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+    setAIStatus(
+      "AI 模型載入失敗：" +
+      error.message,
+      "error"
+    );
+
+    debug(
+      "WebLLM 載入失敗：" +
+      error.message
+    );
+
+    loadModelBtn.disabled = false;
+
+  } finally {
+
+    state.loading = false;
+  }
+}
 
 /* =========================================================
-   AI analysis
-   ========================================================= */
+   AI Analysis
+========================================================= */
 
 async function analyzeWithAI() {
 
-  if (!state.engine) {
-    setAiStatus(
-      "請先載入 AI 模型",
-      "warn"
-    );
-    return;
-  }
-
-  if (!historyRecords.length) {
-    setAiStatus(
-      "請先讀取歷史資料",
-      "warn"
-    );
-    return;
-  }
-
-  if (state.analyzing) {
+  if (
+    !state.engine ||
+    state.analyzing ||
+    !historyRecords.length
+  ) {
     return;
   }
 
@@ -2694,13 +2295,13 @@ async function analyzeWithAI() {
 
   analyzeBtn.disabled = true;
 
-  setAiStatus(
-    "AI 正在分析歷史資料...",
-    "warn"
-  );
-
   aiOutput.textContent =
-    "";
+    "AI 正在分析...";
+
+  setAIStatus(
+    `正在分析 ${historyRecords.length} 筆資料...`,
+    "info"
+  );
 
   try {
 
@@ -2708,6 +2309,10 @@ async function analyzeWithAI() {
       buildAnalysisPrompt(
         historyRecords
       );
+
+    debug(
+      `AI Prompt 資料筆數：${historyRecords.length}`
+    );
 
     let output = "";
 
@@ -2723,11 +2328,8 @@ async function analyzeWithAI() {
             content: prompt
           }
         ],
-
         stream: true,
-
         temperature: 0.2,
-
         max_tokens: 512
       });
 
@@ -2736,10 +2338,8 @@ async function analyzeWithAI() {
     ) {
 
       const delta =
-        chunk
-          ?.choices?.[0]
-          ?.delta
-          ?.content || "";
+        chunk?.choices?.[0]?.delta?.content ||
+        "";
 
       if (!delta) {
         continue;
@@ -2751,39 +2351,34 @@ async function analyzeWithAI() {
         cleanAIOutput(output);
     }
 
-    const cleaned =
+    const finalOutput =
       cleanAIOutput(output);
 
     aiOutput.textContent =
-      cleaned ||
-      "AI 沒有產生內容。";
+      finalOutput ||
+      "AI 沒有產生分析結果。";
 
-    setAiStatus(
-      "分析完成",
+    setAIStatus(
+      "AI 分析完成",
       "ok"
-    );
-
-    state.currentSuggestion =
-      cleaned;
-
-    log(
-      "AI 趨勢分析完成"
     );
 
   } catch (error) {
 
+    console.error(error);
+
     aiOutput.textContent =
       "AI 分析失敗：\n" +
-      (error?.message || error);
+      error.message;
 
-    setAiStatus(
+    setAIStatus(
       "AI 分析失敗",
       "error"
     );
 
-    log(
-      "AI 分析失敗：\n" +
-      (error?.stack || error)
+    debug(
+      "AI 分析失敗：" +
+      error.message
     );
 
   } finally {
@@ -2791,122 +2386,16 @@ async function analyzeWithAI() {
     state.analyzing = false;
 
     analyzeBtn.disabled =
-      !state.engine ||
-      historyRecords.length === 0;
-  }
-}
-
-
-/* =========================================================
-   GATT enumeration
-   ========================================================= */
-
-async function enumerateGatt() {
-
-  if (!service) {
-    return;
-  }
-
-  try {
-
-    const characteristics =
-      await service.getCharacteristics();
-
-    const lines = [];
-
-    lines.push(
-      `Service: ${SERVICE_UUID}`
-    );
-
-    lines.push("");
-
-    for (
-      const characteristic
-      of characteristics
-    ) {
-
-      const properties =
-        characteristic.properties;
-
-      const props = [];
-
-      if (properties.read) {
-        props.push("read");
-      }
-
-      if (properties.write) {
-        props.push("write");
-      }
-
-      if (properties.writeWithoutResponse) {
-        props.push(
-          "writeWithoutResponse"
-        );
-      }
-
-      if (properties.notify) {
-        props.push("notify");
-      }
-
-      if (properties.indicate) {
-        props.push("indicate");
-      }
-
-      lines.push(
-        `${characteristic.uuid}\n` +
-        `  ${props.join(", ")}`
+      !(
+        state.engine &&
+        historyRecords.length
       );
-    }
-
-    gattOutput.textContent =
-      lines.join("\n");
-
-  } catch (error) {
-
-    gattOutput.textContent =
-      "GATT enumeration 失敗：\n" +
-      error.message;
   }
 }
 
-
 /* =========================================================
-   Clear
-   ========================================================= */
-
-function clearHistory() {
-
-  historyRecords = [];
-
-  historyTableBody.innerHTML = "";
-
-  currentExpected = 0;
-  currentReceived = 0;
-
-  updateHistoryProgress(0);
-
-  historyStatus.textContent =
-    "歷史資料已清除";
-
-  exportCsvBtn.disabled =
-    true;
-
-  analyzeBtn.disabled =
-    true;
-
-  aiOutput.textContent =
-    "尚未分析";
-
-  if (state.engine) {
-    analyzeBtn.disabled =
-      true;
-  }
-}
-
-
-/* =========================================================
-   Event listeners
-   ========================================================= */
+   Events
+========================================================= */
 
 connectBtn.addEventListener(
   "click",
@@ -2918,19 +2407,14 @@ disconnectBtn.addEventListener(
   disconnect
 );
 
-readLiveBtn.addEventListener(
+readTimeBtn.addEventListener(
   "click",
-  readLiveData
+  readTime
 );
 
 syncTimeBtn.addEventListener(
   "click",
   syncTime
-);
-
-readTimeBtn.addEventListener(
-  "click",
-  readTime
 );
 
 readHistoryStatusBtn.addEventListener(
@@ -2940,17 +2424,17 @@ readHistoryStatusBtn.addEventListener(
 
 readHistoryBtn.addEventListener(
   "click",
-  readRecentHistory
+  readHistory
+);
+
+exportCsvBtn.addEventListener(
+  "click",
+  exportCsv
 );
 
 clearHistoryBtn.addEventListener(
   "click",
   clearHistory
-);
-
-exportCsvBtn.addEventListener(
-  "click",
-  exportHistoryCsv
 );
 
 loadModelBtn.addEventListener(
@@ -2963,34 +2447,26 @@ analyzeBtn.addEventListener(
   analyzeWithAI
 );
 
-clearLogBtn.addEventListener(
-  "click",
-  () => {
-    logOutput.textContent = "";
-  }
-);
-
-
 /* =========================================================
-   Initial state
-   ========================================================= */
+   Init
+========================================================= */
 
 checkWebGPU();
 
-updateConnectionUI();
-
-log(
-  "LYWSD02MMC Monitor 啟動"
+debug(
+  "LYWSD02MMC BLE Monitor 啟動"
 );
 
-log(
-  "SERVICE_UUID = " +
-  SERVICE_UUID
+debug(
+  "歷史資料上限：24 筆"
 );
 
-log(
-  "WebLLM MODEL_ID = " +
-  MODEL_ID
+debug(
+  "歷史溫度解析：/10"
+);
+
+debug(
+  "即時 CCC1 溫度解析：/100"
 );
 
 </script>
