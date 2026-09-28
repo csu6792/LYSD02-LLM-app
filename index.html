@@ -2159,32 +2159,18 @@ function buildAnalysisPrompt() {
 資料筆數：${historyRecords.length}
 開始時間：${formatDate(historyRecords[0].date)}
 結束時間：${formatDate(
-    historyRecords[historyRecords.length - 1].date
-  )}
+  historyRecords[historyRecords.length - 1].date
+)}
 
-【整體統計】
-平均溫度：${stats.avgTemp.toFixed(1)}°C
-平均濕度：${stats.avgHumidity.toFixed(1)}%
-
-最高溫：
+【最高溫度】
 ${stats.maxTempRecord.maxTemp.toFixed(1)}°C
 發生時間：
 ${formatDate(stats.maxTempRecord.date)}
 
-最低溫：
-${stats.minTempRecord.minTemp.toFixed(1)}°C
-發生時間：
-${formatDate(stats.minTempRecord.date)}
-
-最高濕度：
+【最高濕度】
 ${stats.maxHumidityRecord.maxHumidity}%
 發生時間：
 ${formatDate(stats.maxHumidityRecord.date)}
-
-最低濕度：
-${stats.minHumidityRecord.minHumidity}%
-發生時間：
-${formatDate(stats.minHumidityRecord.date)}
 
 【時間區段統計】
 ${periodText}
@@ -2195,30 +2181,30 @@ ${dailyText || "目前沒有足夠資料形成每日平均"}
 【原始歷史資料】
 ${rawText}
 
-請用繁體中文回答，並依照以下格式：
+請用繁體中文回答，並且只輸出以下三個部分：
 
-【溫度較高的時間】
-指出平均溫度最高的時間區段，引用實際數值。
-如果不同時段資料筆數差異很大，請提醒這一點。
+【最高溫度】
+列出最高溫度數值，以及發生的日期與時間。
 
-【濕度較高的時間】
-指出平均濕度最高的時間區段，引用實際數值。
+【最高濕度】
+列出最高濕度數值，以及發生的日期與時間。
 
-【最高與最低】
-列出最高溫、最低溫、最高濕度、最低濕度以及發生時間。
+【趨勢分析】
+簡單分析目前資料：
+1. 哪個時間區段平均溫度較高。
+2. 哪個時間區段平均濕度較高。
+3. 簡單說明溫度與濕度目前呈現的變化趨勢。
+4. 如果不同時間區段的資料筆數差異很大，請簡短提醒。
+5. 如果資料明顯偏離其他資料，可以列為「異常候選」，但不要診斷設備故障。
 
-【趨勢】
-簡單說明目前資料顯示的溫度與濕度變化。
-
-【異常候選】
-只有資料明顯偏離其他資料時才提出，並稱為「異常候選」，不要診斷故障。
-
-【資料範圍】
-最後說明目前分析的是 ${historyRecords.length} 筆資料，以及實際涵蓋的開始與結束時間。
-
+不要輸出最低溫度。
+不要輸出最低濕度。
+不要列出完整統計表。
+不要重複列出原始資料。
 不要自行增加資料。
-不要使用簡體中文。
+使用繁體中文。
 不要聲稱目前資料代表長期趨勢。
+所有數值都必須以提供的資料為準。
 `;
 }
 
